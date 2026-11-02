@@ -6,6 +6,19 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import {
+  LayoutGrid,
+  Home,
+  Headphones,
+  Menu,
+  X,
+  Sparkles,
+  FileText,
+  PhoneCall,
+  Layers,
+  Award,
+  Send
+} from 'lucide-react';
+import {
   WebcraftLogoIcon,
   IconSpeedSprint,
   IconSeoGrowth,
@@ -333,11 +346,15 @@ const TEMPLATES: TemplateItem[] = [
 
 export default function App() {
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [mobileSlide, setMobileSlide] = useState<number>(0);
   const [activeModalItem, setActiveModalItem] = useState<TemplateItem | null>(null);
   const [selectedTemplateName, setSelectedTemplateName] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [showToast, setShowToast] = useState<boolean>(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [showZaloBubble, setShowZaloBubble] = useState<boolean>(true);
+  const [activeMobileTab, setActiveMobileTab] = useState<string>('home');
 
   // Form State
   const [clientName, setClientName] = useState<string>('');
@@ -534,7 +551,7 @@ export default function App() {
     const onPointerMove = (e: PointerEvent) => {
       if (!isDragging) return;
 
-      const u = window.innerWidth <= 820 ? window.innerWidth / 640 : Math.min(window.innerWidth / 1440, window.innerHeight / 1080);
+      const u = window.innerWidth <= 1024 ? window.innerWidth / 640 : Math.min(window.innerWidth / 1440, window.innerHeight / 1080);
       const dx = e.clientX - startPointerX;
       if (Math.abs(dx) > 6) {
         hasDraggedFarRef.current = true;
@@ -621,12 +638,12 @@ export default function App() {
 
       scrollPos = ((scrollPos % TRACK_LENGTH) + TRACK_LENGTH) % TRACK_LENGTH;
 
-      const isMobile = window.innerWidth <= 820;
+      const isMobile = window.innerWidth <= 1024;
       const u = isMobile ? window.innerWidth / 640 : Math.min(window.innerWidth / 1440, window.innerHeight / 1080);
 
       const centerScreenX = isMobile ? (window.innerWidth / 2 / u) : 720;
       const centerYOffset = isMobile ? (125 / u) : 687;
-      const radiusScale = isMobile ? 0.68 : 1.0;
+      const radiusScale = isMobile ? (window.innerWidth >= 768 ? 0.55 : 0.68) : 1.0;
 
       for (let i = 0; i < NUM_CARDS; i++) {
         const cardObj = cardsElements[i];
@@ -787,20 +804,107 @@ export default function App() {
     : TEMPLATES.filter((t) => t.category === categoryFilter);
 
   return (
-    <div className="min-h-screen bg-[#F5F8EF] text-[#101410] font-sans">
+    <div className="min-h-screen bg-[#F5F8EF] text-[#101410] font-sans max-lg:pb-24">
+      {/* =====================================================================
+          MOBILE & TABLET STICKY APP HEADER (<= 1024px)
+          Synchronized with CNS Dung Trọng Forest Green & Mint Brand Identity
+          ===================================================================== */}
+      <header className="lg:hidden sticky top-0 z-50 bg-[#08482D] text-white px-4 py-3 flex items-center justify-between shadow-md">
+        <a href="#hero" className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl bg-[#DAE7C7] flex items-center justify-center shrink-0 shadow-xs">
+            <WebcraftLogoIcon className="w-6 h-6" color="#08482D" secondaryColor="#FFFFFF" />
+          </div>
+          <div className="leading-tight">
+            <div className="font-['Inter_Tight'] font-extrabold text-base sm:text-lg tracking-tight text-white flex items-baseline gap-1">
+              <span>CNS DUNG TRỌNG</span>
+            </div>
+            <div className="text-[10px] font-medium tracking-wide text-[#DAE7C7]">
+              Thiết Kế Website &amp; Chuyển Đổi Số
+            </div>
+          </div>
+        </a>
+
+        <div className="flex items-center gap-2">
+          <a
+            href="tel:0832555500"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#DAE7C7] text-[#08482D] text-xs font-bold shadow-xs active:scale-95 transition-transform"
+          >
+            <PhoneCall className="w-3.5 h-3.5" />
+            <span className="max-sm:hidden">0832.555.500</span>
+            <span className="sm:hidden">Gọi ngay</span>
+          </a>
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer"
+            aria-label="Mở menu"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile & Tablet Slide-down Navigation Drawer */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden fixed inset-x-0 top-[60px] z-40 bg-white border-b border-[#08482D]/15 shadow-2xl p-4 space-y-1.5">
+          <a
+            href="#showcase"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-[#101410] hover:bg-[#F5F8EF] hover:text-[#08482D]"
+          >
+            <LayoutGrid className="w-4 h-4 text-[#08482D]" />
+            <span>Kho Giao Diện Mẫu (50+)</span>
+          </a>
+          <a
+            href="#features"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-[#101410] hover:bg-[#F5F8EF] hover:text-[#08482D]"
+          >
+            <Award className="w-4 h-4 text-[#08482D]" />
+            <span>Ưu Điểm Độc Quyền</span>
+          </a>
+          <a
+            href="#process"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-[#101410] hover:bg-[#F5F8EF] hover:text-[#08482D]"
+          >
+            <Layers className="w-4 h-4 text-[#08482D]" />
+            <span>Quy Trình 4 Bước</span>
+          </a>
+          <a
+            href="#pricing"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-[#101410] hover:bg-[#F5F8EF] hover:text-[#08482D]"
+          >
+            <FileText className="w-4 h-4 text-[#08482D]" />
+            <span>Bảng Giá Trọn Gói</span>
+          </a>
+          <div className="pt-2">
+            <a
+              href="#consultation"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-bold bg-[#08482D] text-white shadow-sm"
+            >
+              <Send className="w-4 h-4" />
+              <span>Nhận Tư Vấn &amp; Báo Giá Miễn Phí</span>
+            </a>
+          </div>
+        </div>
+      )}
+
       {/* =====================================================================
           SECTION 1: HERO VIEWPORT (Desktop 1440x1080 Scaled + Mobile Responsive)
           ===================================================================== */}
       <div className="hero-viewport-container" id="hero">
         <main id="hero-viewport">
-          {/* Top Logo */}
-          <a href="#hero" className="absolute left-[calc(37*var(--u))] top-[calc(36*var(--u))] flex items-center gap-[calc(9*var(--u))] text-[#08482D] z-25 max-md:relative max-md:left-auto max-md:top-auto max-md:mb-5 group">
-            <WebcraftLogoIcon className="w-[calc(30*var(--u))] h-[calc(30*var(--u))] max-md:w-8 max-md:h-8 group-hover:scale-105 transition-transform" />
-            <span className="font-['Inter_Tight'] font-bold text-[calc(22*var(--u))] max-md:text-2xl text-[#08482D] tracking-tight">CNS Dung Trọng</span>
+          {/* Top Logo (Hidden on mobile/tablet since App Header is shown) */}
+          <a href="#hero" className="absolute left-[calc(37*var(--u))] top-[calc(36*var(--u))] flex items-center gap-[calc(9*var(--u))] text-[#08482D] z-25 max-lg:hidden group">
+            <WebcraftLogoIcon className="w-[calc(30*var(--u))] h-[calc(30*var(--u))] group-hover:scale-105 transition-transform" />
+            <span className="font-['Inter_Tight'] font-bold text-[calc(22*var(--u))] text-[#08482D] tracking-tight">CNS Dung Trọng</span>
           </a>
 
           {/* Desktop Navigation Links */}
-          <nav className="absolute left-[calc(440*var(--u))] top-[calc(38*var(--u))] flex items-center gap-[calc(28*var(--u))] z-25 max-md:hidden">
+          <nav className="absolute left-[calc(440*var(--u))] top-[calc(38*var(--u))] flex items-center gap-[calc(28*var(--u))] z-25 max-lg:hidden">
             <a href="#showcase" className="font-medium text-[calc(15.5*var(--u))] text-[#101410] hover:text-[#08482D] transition-colors">Dự Án Mẫu</a>
             <a href="#features" className="font-medium text-[calc(15.5*var(--u))] text-[#101410] hover:text-[#08482D] transition-colors">Ưu Điểm</a>
             <a href="#process" className="font-medium text-[calc(15.5*var(--u))] text-[#101410] hover:text-[#08482D] transition-colors">Quy Trình</a>
@@ -808,66 +912,112 @@ export default function App() {
             <a href="#consultation" className="font-medium text-[calc(15.5*var(--u))] text-[#101410] hover:text-[#08482D] transition-colors">Tư Vấn Miễn Phí</a>
           </nav>
 
-          {/* Top Actions: Hotline + Fast CTA */}
-          <div className="absolute right-[calc(37*var(--u))] top-[calc(29*var(--u))] flex items-center gap-[calc(12*var(--u))] z-25 max-md:right-5 max-md:top-5">
+          {/* Top Actions: Hotline + Fast CTA (Hidden on mobile/tablet) */}
+          <div className="absolute right-[calc(37*var(--u))] top-[calc(29*var(--u))] flex items-center gap-[calc(12*var(--u))] z-25 max-lg:hidden">
             <a href="tel:0832555500" className="hidden lg:flex items-center gap-[calc(7*var(--u))] px-[calc(14*var(--u))] py-[calc(8*var(--u))] bg-white/75 border border-[#08482D]/15 rounded-full text-[calc(13.5*var(--u))] font-medium text-[#08482D] hover:bg-white transition-all">
               <IconDirectChat className="w-4 h-4 text-[#08482D]" />
               <span>Hotline: 0832.555.500</span>
             </a>
-            <a href="#consultation" className="h-[calc(40*var(--u))] max-md:h-10 px-[calc(20*var(--u))] max-md:px-4 bg-[#08482D] text-white rounded-full font-medium text-[calc(14.5*var(--u))] max-md:text-xs flex items-center gap-1.5 hover:bg-[#0b5938] transition-all shadow-md">
+            <a href="#consultation" className="h-[calc(40*var(--u))] px-[calc(20*var(--u))] bg-[#08482D] text-white rounded-full font-medium text-[calc(14.5*var(--u))] flex items-center gap-1.5 hover:bg-[#0b5938] transition-all shadow-md">
               <span>Nhận Tư Vấn</span>
               <IconSendPaperPlane className="w-3.5 h-3.5 text-white" />
             </a>
           </div>
 
           {/* Mint Pill Badge */}
-          <div className="absolute left-[calc(490*var(--u))] top-[calc(115*var(--u))] w-[calc(460*var(--u))] h-[calc(37*var(--u))] max-md:relative max-md:left-auto max-md:top-auto max-md:w-auto max-md:px-4 max-md:py-2 bg-[#DAE7C7] text-[#08482D] rounded-full font-semibold text-[calc(15.5*var(--u))] max-md:text-xs flex items-center justify-center gap-2 text-center z-10 max-md:mb-4 shadow-xs">
+          <div className="absolute left-[calc(490*var(--u))] top-[calc(115*var(--u))] w-[calc(460*var(--u))] h-[calc(37*var(--u))] max-lg:relative max-lg:left-auto max-lg:top-auto max-lg:w-auto max-lg:px-4 max-lg:py-1.5 bg-[#DAE7C7] text-[#08482D] rounded-full font-semibold text-[calc(15.5*var(--u))] max-lg:text-xs flex items-center justify-center gap-2 text-center z-10 max-lg:mb-3 shadow-xs">
             <WebcraftLogoIcon className="w-4 h-4 text-[#08482D]" />
             <span>50+ Mẫu Website Chuẩn SEO &amp; Tối Ưu Doanh Thu</span>
           </div>
 
           {/* Headline */}
-          <div className="absolute left-0 w-full top-[calc(172*var(--u))] text-center pointer-events-none z-10 max-md:relative max-md:top-auto max-md:mb-3">
-            <h1 className="font-['Inter_Tight'] font-bold text-[calc(64*var(--u))] max-md:text-3xl leading-[calc(74*var(--u))] max-md:leading-tight text-[#101410] tracking-[-0.03em]">
+          <div className="absolute left-0 w-full top-[calc(172*var(--u))] text-center pointer-events-none z-10 max-lg:relative max-lg:top-auto max-lg:mb-2.5">
+            <h1 className="font-['Inter_Tight'] font-bold text-[calc(64*var(--u))] max-lg:text-[26px] sm:max-lg:text-4xl leading-[calc(74*var(--u))] max-lg:leading-tight text-[#101410] tracking-[-0.03em]">
               Khám Phá Mẫu Website Đẳng Cấp
             </h1>
-            <h1 className="font-['Inter_Tight'] font-bold text-[calc(64*var(--u))] max-md:text-3xl leading-[calc(74*var(--u))] max-md:leading-tight text-[#101410] tracking-[-0.02em]">
+            <h1 className="font-['Inter_Tight'] font-bold text-[calc(64*var(--u))] max-lg:text-[26px] sm:max-lg:text-4xl leading-[calc(74*var(--u))] max-lg:leading-tight text-[#101410] tracking-[-0.02em]">
               Bứt Phá Doanh Thu Thương Hiệu
             </h1>
           </div>
 
           {/* Subline */}
-          <p className="absolute left-0 w-full top-[calc(346*var(--u))] font-normal text-[calc(18.5*var(--u))] max-md:text-sm leading-[calc(29*var(--u))] max-md:leading-relaxed text-[#5E5E61] text-center pointer-events-none z-10 max-md:relative max-md:top-auto max-md:max-w-md max-md:mb-5">
-            Trải nghiệm bộ sưu tập website mẫu hiện đại được tối ưu hóa cho từng ngành nghề.<br className="max-md:hidden" />
+          <p className="absolute left-0 w-full top-[calc(346*var(--u))] font-normal text-[calc(18.5*var(--u))] max-lg:text-xs sm:max-lg:text-sm leading-[calc(29*var(--u))] max-lg:leading-relaxed text-[#5E5E61] text-center pointer-events-none z-10 max-lg:relative max-lg:top-auto max-lg:max-w-lg max-lg:mb-4">
+            Trải nghiệm bộ sưu tập website mẫu hiện đại được tối ưu hóa cho từng ngành nghề.<br className="max-lg:hidden" />
             Chọn mẫu ưng ý hoặc điền thông tin để chuyên gia tư vấn giải pháp đo ni đóng giày cho bạn.
           </p>
 
           {/* Doodle Slashes */}
-          <svg className="absolute left-[calc(215*var(--u))] top-[calc(342*var(--u))] w-[calc(42*var(--u))] h-[calc(42*var(--u))] pointer-events-none z-15 max-md:hidden" viewBox="0 0 44 44" fill="none">
+          <svg className="absolute left-[calc(215*var(--u))] top-[calc(342*var(--u))] w-[calc(42*var(--u))] h-[calc(42*var(--u))] pointer-events-none z-15 max-lg:hidden" viewBox="0 0 44 44" fill="none">
             <path d="M10 38 L22 6" stroke="#08482D" strokeWidth="3.2" strokeLinecap="round" />
             <path d="M22 38 L34 6" stroke="#08482D" strokeWidth="3.2" strokeLinecap="round" />
           </svg>
 
           {/* Handwritten Note (Top Right) */}
-          <div className="absolute left-[calc(1235*var(--u))] top-[calc(332*var(--u))] pointer-events-none z-15 max-md:hidden">
+          <div className="absolute left-[calc(1235*var(--u))] top-[calc(332*var(--u))] pointer-events-none z-15 max-lg:hidden">
             <div className="font-['Caveat'] font-semibold text-[calc(25*var(--u))] leading-[calc(26*var(--u))] text-[#08482D] rotate-12 origin-top-left whitespace-nowrap">
               Kéo để xem<br />chọn mẫu ngay
             </div>
           </div>
-          <svg className="absolute left-[calc(1175*var(--u))] top-[calc(392*var(--u))] w-[calc(130*var(--u))] h-[calc(120*var(--u))] pointer-events-none overflow-visible z-15 max-md:hidden" viewBox="0 0 140 140" fill="none">
+          <svg className="absolute left-[calc(1175*var(--u))] top-[calc(392*var(--u))] w-[calc(130*var(--u))] h-[calc(120*var(--u))] pointer-events-none overflow-visible z-15 max-lg:hidden" viewBox="0 0 140 140" fill="none">
             <path d="M96 14 C104 55, 78 98, 28 128" stroke="#08482D" strokeWidth="2.4" strokeLinecap="round" />
             <path d="M22 112 L28 128 L44 122" stroke="#08482D" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
 
-          {/* 3D Cylinder Carousel Track */}
-          <div className="mobile-cards-band" id="cards-wrapper">
+          {/* 3D Cylinder Carousel Track (Desktop) */}
+          <div className="mobile-cards-band max-lg:hidden" id="cards-wrapper">
             <div id="cards-track" ref={trackRef} role="region" aria-label="Băng chuyền website mẫu 3D">
               {/* Cards mounted by useEffect */}
             </div>
           </div>
 
+          {/* Mobile / Tablet Media Card Carousel (scroll-snap) */}
+          <div className="lg:hidden w-screen -mx-5 mt-1 mb-5">
+            <div
+              className="mcc-track no-scrollbar"
+              onScroll={(e) => {
+                const el = e.currentTarget;
+                const card = el.firstElementChild as HTMLElement | null;
+                if (!card) return;
+                const step = card.offsetWidth + 14;
+                setMobileSlide(Math.round(el.scrollLeft / step));
+              }}
+            >
+              {TEMPLATES.slice(0, 10).map((t, i) => (
+                <button
+                  key={t.title}
+                  type="button"
+                  onClick={() => setActiveModalItem(t)}
+                  className={`mcc-card ${mobileSlide === i ? 'is-active' : ''}`}
+                  aria-label={`Xem mẫu: ${t.title}`}
+                >
+                  <img src={t.thumbnailImage} alt={t.title} loading="lazy" className="mcc-img" />
+                  <div className="mcc-shade" />
+                  <div className="mcc-top">
+                    <span className="mcc-tag">{t.categoryName}</span>
+                    <span className="mcc-open">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M8 7h9v9" /></svg>
+                    </span>
+                  </div>
+                  <div className="mcc-info">
+                    <div className="mcc-title">{t.title}</div>
+                    <div className="mcc-desc">{t.desc}</div>
+                    <span className="mcc-cta">Xem demo →</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+            <div className="flex justify-center gap-1.5 mt-3">
+              {TEMPLATES.slice(0, 10).map((t, i) => (
+                <span
+                  key={t.title}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${mobileSlide === i ? 'w-5 bg-[#08482D]' : 'w-1.5 bg-[#08482D]/25'}`}
+                />
+              ))}
+            </div>
+          </div>
+
           {/* Bottom CTA Button */}
-          <div className="absolute left-[calc(610*var(--u))] top-[calc(901*var(--u))] w-[calc(220*var(--u))] h-[calc(74*var(--u))] flex items-center justify-center z-20 max-md:relative max-md:left-auto max-md:top-auto max-md:w-auto max-md:mt-4">
+          <div className="absolute left-[calc(610*var(--u))] top-[calc(901*var(--u))] w-[calc(220*var(--u))] h-[calc(74*var(--u))] flex items-center justify-center z-20 max-lg:relative max-lg:left-auto max-lg:top-auto max-lg:w-auto max-lg:mt-2">
             <div className="button-ring" aria-hidden="true"></div>
             <a href="#consultation" className="main-cta-button" id="btn-make-reel">
               Nhận Tư Vấn Miễn Phí
@@ -875,12 +1025,12 @@ export default function App() {
           </div>
 
           {/* Handwritten Note (Zero Cost) */}
-          <div className="absolute left-[calc(410*var(--u))] top-[calc(918*var(--u))] pointer-events-none z-15 max-md:relative max-md:left-auto max-md:top-auto max-md:mt-3">
-            <span className="font-['Caveat'] font-semibold text-[calc(25*var(--u))] max-md:text-xl text-[#08482D] -rotate-8 inline-block whitespace-nowrap">
+          <div className="absolute left-[calc(410*var(--u))] top-[calc(918*var(--u))] pointer-events-none z-15 max-lg:relative max-lg:left-auto max-lg:top-auto max-lg:mt-5">
+            <span className="font-['Caveat'] font-semibold text-[calc(25*var(--u))] max-lg:text-lg text-[#08482D] -rotate-8 max-lg:rotate-0 inline-block whitespace-nowrap">
               Zero cost · Báo giá 30p
             </span>
           </div>
-          <svg className="absolute left-[calc(548*var(--u))] top-[calc(942*var(--u))] w-[calc(54*var(--u))] h-[calc(32*var(--u))] pointer-events-none overflow-visible z-15 max-md:hidden" viewBox="0 0 64 36" fill="none">
+          <svg className="absolute left-[calc(548*var(--u))] top-[calc(942*var(--u))] w-[calc(54*var(--u))] h-[calc(32*var(--u))] pointer-events-none overflow-visible z-15 max-lg:hidden" viewBox="0 0 64 36" fill="none">
             <path d="M8 26 C24 30, 44 24, 56 12" stroke="#08482D" strokeWidth="2.2" strokeLinecap="round" />
             <path d="M42 10 L56 12 L52 24" stroke="#08482D" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
@@ -890,24 +1040,24 @@ export default function App() {
       {/* =====================================================================
           SECTION 2: SHOWCASE GALLERY (Scroll Reveal with Intersection Observer)
           ===================================================================== */}
-      <section className="max-w-[1240px] mx-auto px-6 py-20" id="showcase">
-        <div className="scroll-reveal text-center max-w-3xl mx-auto mb-10">
+      <section className="max-w-[1240px] mx-auto px-4 sm:px-6 py-12 md:py-20" id="showcase">
+        <div className="scroll-reveal text-center max-w-3xl mx-auto mb-8 md:mb-10">
           <span className="inline-flex items-center gap-1.5 bg-[#DAE7C7] text-[#08482D] text-xs font-semibold px-3.5 py-1 rounded-full mb-3">
             Bộ Sưu Tập Đa Ngành
           </span>
-          <h2 className="font-['Inter_Tight'] text-3xl md:text-4xl font-bold tracking-tight text-[#101410] mb-3">
+          <h2 className="font-['Inter_Tight'] text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#101410] mb-2.5">
             Thư Viện Mẫu Website Được Ưa Chuộng Nhất
           </h2>
-          <p className="text-base text-[#5E5E61] max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-[#5E5E61] max-w-2xl mx-auto">
             Tất cả các mẫu đều đạt chuẩn Google PageSpeed 95+, thiết kế Responsive 100% trên điện thoại và tối ưu phễu chuyển đổi giúp bạn chốt đơn vượt trội.
           </p>
         </div>
 
-        {/* Filter Bar */}
-        <div className="scroll-reveal flex flex-wrap gap-2 mb-10 border-b border-[#08482D]/12 pb-4">
+        {/* Filter Bar (Horizontal swipeable pills on mobile, wrap on desktop) */}
+        <div className="scroll-reveal flex max-md:overflow-x-auto max-md:flex-nowrap md:flex-wrap gap-2 mb-8 md:mb-10 border-b border-[#08482D]/12 pb-3.5 max-md:-mx-4 max-md:px-4 no-scrollbar">
           <button
             onClick={() => setCategoryFilter('all')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer shrink-0 ${
               categoryFilter === 'all'
                 ? 'bg-[#08482D] text-white shadow-sm'
                 : 'bg-white border border-[#08482D]/15 text-[#5E5E61] hover:text-[#08482D]'
@@ -917,7 +1067,7 @@ export default function App() {
           </button>
           <button
             onClick={() => setCategoryFilter('ecommerce')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer shrink-0 ${
               categoryFilter === 'ecommerce'
                 ? 'bg-[#08482D] text-white shadow-sm'
                 : 'bg-white border border-[#08482D]/15 text-[#5E5E61] hover:text-[#08482D]'
@@ -927,7 +1077,7 @@ export default function App() {
           </button>
           <button
             onClick={() => setCategoryFilter('corporate')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer shrink-0 ${
               categoryFilter === 'corporate'
                 ? 'bg-[#08482D] text-white shadow-sm'
                 : 'bg-white border border-[#08482D]/15 text-[#5E5E61] hover:text-[#08482D]'
@@ -937,7 +1087,7 @@ export default function App() {
           </button>
           <button
             onClick={() => setCategoryFilter('tech')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer shrink-0 ${
               categoryFilter === 'tech'
                 ? 'bg-[#08482D] text-white shadow-sm'
                 : 'bg-white border border-[#08482D]/15 text-[#5E5E61] hover:text-[#08482D]'
@@ -947,7 +1097,7 @@ export default function App() {
           </button>
           <button
             onClick={() => setCategoryFilter('fb')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer shrink-0 ${
               categoryFilter === 'fb'
                 ? 'bg-[#08482D] text-white shadow-sm'
                 : 'bg-white border border-[#08482D]/15 text-[#5E5E61] hover:text-[#08482D]'
@@ -957,7 +1107,7 @@ export default function App() {
           </button>
           <button
             onClick={() => setCategoryFilter('realestate')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer shrink-0 ${
               categoryFilter === 'realestate'
                 ? 'bg-[#08482D] text-white shadow-sm'
                 : 'bg-white border border-[#08482D]/15 text-[#5E5E61] hover:text-[#08482D]'
@@ -967,7 +1117,7 @@ export default function App() {
           </button>
           <button
             onClick={() => setCategoryFilter('service')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer shrink-0 ${
               categoryFilter === 'service'
                 ? 'bg-[#08482D] text-white shadow-sm'
                 : 'bg-white border border-[#08482D]/15 text-[#5E5E61] hover:text-[#08482D]'
@@ -1027,8 +1177,8 @@ export default function App() {
               </div>
 
               {/* Card Body */}
-              <div className="p-6 flex flex-col flex-1">
-                <div className="flex gap-2 mb-3 flex-wrap">
+              <div className="p-4 sm:p-6 flex flex-col flex-1">
+                <div className="flex gap-1.5 sm:gap-2 mb-3 flex-wrap">
                   <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-[#08482D]/10 text-[#08482D] inline-flex items-center gap-1">
                     <IconSpeedSprint className="w-3.5 h-3.5 text-[#08482D]" />
                     <span>{item.pageSpeed} Speed</span>
@@ -1042,22 +1192,22 @@ export default function App() {
                     <span>Mobile 100%</span>
                   </span>
                 </div>
-                <h3 className="font-['Inter_Tight'] text-xl font-bold text-[#101410] mb-2">{item.title}</h3>
-                <p className="text-sm leading-relaxed text-[#5E5E61] mb-5 flex-1">{item.desc}</p>
-                <div className="flex items-center gap-2.5 mt-auto">
+                <h3 className="font-['Inter_Tight'] text-lg sm:text-xl font-bold text-[#101410] mb-1.5 sm:mb-2">{item.title}</h3>
+                <p className="text-xs sm:text-sm leading-relaxed text-[#5E5E61] mb-4 sm:mb-5 flex-1">{item.desc}</p>
+                <div className="flex items-center gap-2 sm:gap-2.5 mt-auto">
                   <button
                     onClick={() => setActiveModalItem(item)}
-                    className="flex-1 h-10 bg-white border border-[#08482D]/20 rounded-lg text-xs font-semibold text-[#08482D] flex items-center justify-center gap-1.5 hover:bg-[#08482D]/8 hover:border-[#08482D] transition-colors cursor-pointer"
+                    className="flex-1 h-10 px-2 bg-white border border-[#08482D]/20 rounded-lg text-xs font-semibold text-[#08482D] flex items-center justify-center gap-1 sm:gap-1.5 hover:bg-[#08482D]/8 hover:border-[#08482D] transition-colors cursor-pointer whitespace-nowrap"
                   >
-                    <IconInspectEye className="w-4 h-4 text-[#08482D]" />
-                    Xem Chi Tiết
+                    <IconInspectEye className="w-3.5 h-3.5 text-[#08482D] shrink-0" />
+                    <span>Xem Chi Tiết</span>
                   </button>
                   <button
                     onClick={() => handleSelectTemplate(item.title)}
-                    className="flex-1 h-10 bg-[#08482D] text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 hover:bg-[#0b5938] transition-colors cursor-pointer"
+                    className="flex-1 h-10 px-2 bg-[#08482D] text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1 sm:gap-1.5 hover:bg-[#0b5938] transition-colors cursor-pointer whitespace-nowrap"
                   >
-                    <IconStudioCheck className="w-3.5 h-3.5 text-white" />
-                    Chọn Mẫu Này
+                    <IconStudioCheck className="w-3.5 h-3.5 text-white shrink-0" />
+                    <span>Chọn Mẫu Này</span>
                   </button>
                 </div>
               </div>
@@ -1069,110 +1219,110 @@ export default function App() {
       {/* =====================================================================
           SECTION 3: FEATURES & PROCESS (Scroll Reveal with Intersection Observer)
           ===================================================================== */}
-      <section className="bg-white border-y border-[#08482D]/12 py-20" id="features">
-        <div className="max-w-[1240px] mx-auto px-6">
-          <div className="scroll-reveal text-center max-w-2xl mx-auto mb-14">
+      <section className="bg-white border-y border-[#08482D]/12 py-12 md:py-20" id="features">
+        <div className="max-w-[1240px] mx-auto px-4 sm:px-6">
+          <div className="scroll-reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
             <span className="inline-flex items-center gap-1.5 bg-[#DAE7C7] text-[#08482D] text-xs font-semibold px-3.5 py-1 rounded-full mb-3">
               <WebcraftLogoIcon className="w-3.5 h-3.5 text-[#08482D]" />
               Cam Kết Chất Lượng Độc Bản
             </span>
-            <h2 className="font-['Inter_Tight'] text-3xl md:text-4xl font-bold tracking-tight text-[#101410] mb-3">
+            <h2 className="font-['Inter_Tight'] text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#101410] mb-2.5">
               Tại Sao Nên Chọn Giải Pháp Website Tại CNS Dung Trọng?
             </h2>
-            <p className="text-base text-[#5E5E61]">
+            <p className="text-sm sm:text-base text-[#5E5E61]">
               Chúng tôi không bán những giao diện có sẵn rập khuôn. Mỗi website là một công cụ kinh doanh sắc bén.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
-            <div className="scroll-reveal stagger-1 p-7 bg-[#F5F8EF] rounded-2xl border border-[#08482D]/12 hover:border-[#08482D]/35 hover:-translate-y-1 transition-all group">
-              <div className="w-12 h-12 bg-[#DAE7C7] rounded-xl flex items-center justify-center mb-4 text-[#08482D] group-hover:scale-110 transition-transform">
-                <IconSpeedSprint className="w-7 h-7 text-[#08482D]" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-14 md:mb-20">
+            <div className="scroll-reveal stagger-1 p-5 sm:p-7 bg-[#F5F8EF] rounded-2xl border border-[#08482D]/12 hover:border-[#08482D]/35 hover:-translate-y-1 transition-all group">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#DAE7C7] rounded-xl flex items-center justify-center mb-3.5 text-[#08482D] group-hover:scale-110 transition-transform">
+                <IconSpeedSprint className="w-6 h-6 sm:w-7 sm:h-7 text-[#08482D]" />
               </div>
-              <h3 className="font-['Inter_Tight'] text-lg font-bold mb-2">Tốc Độ Tải Dưới 1.2 Giây</h3>
-              <p className="text-sm text-[#5E5E61] leading-relaxed">Tối ưu hóa hình ảnh WebP, CDN toàn cầu và mã nguồn sạch giúp giữ chân khách hàng ngay từ giây đầu tiên.</p>
+              <h3 className="font-['Inter_Tight'] text-base sm:text-lg font-bold mb-1.5">Tốc Độ Tải Dưới 1.2 Giây</h3>
+              <p className="text-xs sm:text-sm text-[#5E5E61] leading-relaxed">Tối ưu hóa hình ảnh WebP, CDN toàn cầu và mã nguồn sạch giúp giữ chân khách hàng ngay từ giây đầu tiên.</p>
             </div>
 
-            <div className="scroll-reveal stagger-2 p-7 bg-[#F5F8EF] rounded-2xl border border-[#08482D]/12 hover:border-[#08482D]/35 hover:-translate-y-1 transition-all group">
-              <div className="w-12 h-12 bg-[#DAE7C7] rounded-xl flex items-center justify-center mb-4 text-[#08482D] group-hover:scale-110 transition-transform">
-                <IconSeoGrowth className="w-7 h-7 text-[#08482D]" />
+            <div className="scroll-reveal stagger-2 p-5 sm:p-7 bg-[#F5F8EF] rounded-2xl border border-[#08482D]/12 hover:border-[#08482D]/35 hover:-translate-y-1 transition-all group">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#DAE7C7] rounded-xl flex items-center justify-center mb-3.5 text-[#08482D] group-hover:scale-110 transition-transform">
+                <IconSeoGrowth className="w-6 h-6 sm:w-7 sm:h-7 text-[#08482D]" />
               </div>
-              <h3 className="font-['Inter_Tight'] text-lg font-bold mb-2">Chuẩn SEO On-page Google</h3>
-              <p className="text-sm text-[#5E5E61] leading-relaxed">Cấu trúc schema rich snippets, sitemap tự động và thẻ OpenGraph hoàn chỉnh giúp bài viết và sản phẩm lên top nhanh.</p>
+              <h3 className="font-['Inter_Tight'] text-base sm:text-lg font-bold mb-1.5">Chuẩn SEO On-page Google</h3>
+              <p className="text-xs sm:text-sm text-[#5E5E61] leading-relaxed">Cấu trúc schema rich snippets, sitemap tự động và thẻ OpenGraph hoàn chỉnh giúp bài viết và sản phẩm lên top nhanh.</p>
             </div>
 
-            <div className="scroll-reveal stagger-3 p-7 bg-[#F5F8EF] rounded-2xl border border-[#08482D]/12 hover:border-[#08482D]/35 hover:-translate-y-1 transition-all group">
-              <div className="w-12 h-12 bg-[#DAE7C7] rounded-xl flex items-center justify-center mb-4 text-[#08482D] group-hover:scale-110 transition-transform">
-                <IconMobileTouch className="w-7 h-7 text-[#08482D]" />
+            <div className="scroll-reveal stagger-3 p-5 sm:p-7 bg-[#F5F8EF] rounded-2xl border border-[#08482D]/12 hover:border-[#08482D]/35 hover:-translate-y-1 transition-all group">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#DAE7C7] rounded-xl flex items-center justify-center mb-3.5 text-[#08482D] group-hover:scale-110 transition-transform">
+                <IconMobileTouch className="w-6 h-6 sm:w-7 sm:h-7 text-[#08482D]" />
               </div>
-              <h3 className="font-['Inter_Tight'] text-lg font-bold mb-2">Mobile First Tối Ưu Tỉ Lệ Chốt</h3>
-              <p className="text-sm text-[#5E5E61] leading-relaxed">Nút gọi, chat Zalo, đặt hàng nhanh nổi bật ngay vị trí ngón cái, gia tăng tỷ lệ khách điền form và gọi tư vấn.</p>
+              <h3 className="font-['Inter_Tight'] text-base sm:text-lg font-bold mb-1.5">Mobile First Tối Ưu Tỉ Lệ Chốt</h3>
+              <p className="text-xs sm:text-sm text-[#5E5E61] leading-relaxed">Nút gọi, chat Zalo, đặt hàng nhanh nổi bật ngay vị trí ngón cái, gia tăng tỷ lệ khách điền form và gọi tư vấn.</p>
             </div>
 
-            <div className="scroll-reveal stagger-4 p-7 bg-[#F5F8EF] rounded-2xl border border-[#08482D]/12 hover:border-[#08482D]/35 hover:-translate-y-1 transition-all group">
-              <div className="w-12 h-12 bg-[#DAE7C7] rounded-xl flex items-center justify-center mb-4 text-[#08482D] group-hover:scale-110 transition-transform">
-                <IconShieldWarranty className="w-7 h-7 text-[#08482D]" />
+            <div className="scroll-reveal stagger-4 p-5 sm:p-7 bg-[#F5F8EF] rounded-2xl border border-[#08482D]/12 hover:border-[#08482D]/35 hover:-translate-y-1 transition-all group">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#DAE7C7] rounded-xl flex items-center justify-center mb-3.5 text-[#08482D] group-hover:scale-110 transition-transform">
+                <IconShieldWarranty className="w-6 h-6 sm:w-7 sm:h-7 text-[#08482D]" />
               </div>
-              <h3 className="font-['Inter_Tight'] text-lg font-bold mb-2">Bảo Hành Kỹ Thuật Trọn Đời</h3>
-              <p className="text-sm text-[#5E5E61] leading-relaxed">Hỗ trợ backup dữ liệu hàng tuần, phòng chống mã độc và hỗ trợ cập nhật nội dung bất cứ khi nào bạn cần.</p>
+              <h3 className="font-['Inter_Tight'] text-base sm:text-lg font-bold mb-1.5">Bảo Hành Kỹ Thuật Trọn Đời</h3>
+              <p className="text-xs sm:text-sm text-[#5E5E61] leading-relaxed">Hỗ trợ backup dữ liệu hàng tuần, phòng chống mã độc và hỗ trợ cập nhật nội dung bất cứ khi nào bạn cần.</p>
             </div>
           </div>
 
           {/* 4-Step Process */}
           <div id="process">
-            <div className="scroll-reveal text-center max-w-xl mx-auto mb-10">
+            <div className="scroll-reveal text-center max-w-xl mx-auto mb-8 md:mb-10">
               <span className="inline-flex items-center gap-1.5 bg-[#DAE7C7] text-[#08482D] text-xs font-semibold px-3.5 py-1 rounded-full mb-3">
                 <WebcraftLogoIcon className="w-3.5 h-3.5 text-[#08482D]" />
                 Minh Bạch &amp; Nhanh Chóng
               </span>
-              <h2 className="font-['Inter_Tight'] text-3xl font-bold tracking-tight text-[#101410]">
+              <h2 className="font-['Inter_Tight'] text-2xl sm:text-3xl font-bold tracking-tight text-[#101410]">
                 Quy Trình Triển Khai 4 Bước Chuyên Nghiệp
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="scroll-reveal stagger-1 bg-[#F5F8EF] border border-[#08482D]/12 rounded-2xl p-7 hover:-translate-y-1.5 transition-all group">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="font-['Inter_Tight'] text-4xl font-extrabold text-[#C8DCB0]">01</div>
-                  <div className="w-11 h-11 rounded-xl bg-white flex items-center justify-center shadow-xs border border-[#08482D]/10 group-hover:scale-110 transition-transform">
-                    <IconStepSurvey className="w-6 h-6 text-[#08482D]" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              <div className="scroll-reveal stagger-1 bg-[#F5F8EF] border border-[#08482D]/12 rounded-2xl p-5 sm:p-7 hover:-translate-y-1.5 transition-all group">
+                <div className="flex items-center justify-between mb-3.5">
+                  <div className="font-['Inter_Tight'] text-3xl sm:text-4xl font-extrabold text-[#C8DCB0]">01</div>
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white flex items-center justify-center shadow-xs border border-[#08482D]/10 group-hover:scale-110 transition-transform">
+                    <IconStepSurvey className="w-5 h-5 sm:w-6 sm:h-6 text-[#08482D]" />
                   </div>
                 </div>
-                <h4 className="font-['Inter_Tight'] text-lg font-bold text-[#101410] mb-2">Khảo Sát &amp; Tư Vấn Miễn Phí</h4>
-                <p className="text-sm text-[#5E5E61] leading-relaxed">Tiếp nhận nhu cầu, phân tích đối thủ cạnh tranh và đề xuất mẫu website cùng lộ trình chi phí tối ưu nhất.</p>
+                <h4 className="font-['Inter_Tight'] text-base sm:text-lg font-bold text-[#101410] mb-1.5">Khảo Sát &amp; Tư Vấn Miễn Phí</h4>
+                <p className="text-xs sm:text-sm text-[#5E5E61] leading-relaxed">Tiếp nhận nhu cầu, phân tích đối thủ cạnh tranh và đề xuất mẫu website cùng lộ trình chi phí tối ưu nhất.</p>
               </div>
 
-              <div className="scroll-reveal stagger-2 bg-[#F5F8EF] border border-[#08482D]/12 rounded-2xl p-7 hover:-translate-y-1.5 transition-all group">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="font-['Inter_Tight'] text-4xl font-extrabold text-[#C8DCB0]">02</div>
-                  <div className="w-11 h-11 rounded-xl bg-white flex items-center justify-center shadow-xs border border-[#08482D]/10 group-hover:scale-110 transition-transform">
-                    <IconStepPrototype className="w-6 h-6 text-[#08482D]" />
+              <div className="scroll-reveal stagger-2 bg-[#F5F8EF] border border-[#08482D]/12 rounded-2xl p-5 sm:p-7 hover:-translate-y-1.5 transition-all group">
+                <div className="flex items-center justify-between mb-3.5">
+                  <div className="font-['Inter_Tight'] text-3xl sm:text-4xl font-extrabold text-[#C8DCB0]">02</div>
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white flex items-center justify-center shadow-xs border border-[#08482D]/10 group-hover:scale-110 transition-transform">
+                    <IconStepPrototype className="w-5 h-5 sm:w-6 sm:h-6 text-[#08482D]" />
                   </div>
                 </div>
-                <h4 className="font-['Inter_Tight'] text-lg font-bold text-[#101410] mb-2">Thiết Kế Bản Vẽ &amp; Duyệt Mẫu</h4>
-                <p className="text-sm text-[#5E5E61] leading-relaxed">Khách hàng trải nghiệm bản demo trực tiếp với màu sắc nhận diện thương hiệu, chỉnh sửa đến khi hoàn toàn hài lòng.</p>
+                <h4 className="font-['Inter_Tight'] text-base sm:text-lg font-bold text-[#101410] mb-1.5">Thiết Kế Bản Vẽ &amp; Duyệt Mẫu</h4>
+                <p className="text-xs sm:text-sm text-[#5E5E61] leading-relaxed">Khách hàng trải nghiệm bản demo trực tiếp với màu sắc nhận diện thương hiệu, chỉnh sửa đến khi hoàn toàn hài lòng.</p>
               </div>
 
-              <div className="scroll-reveal stagger-3 bg-[#F5F8EF] border border-[#08482D]/12 rounded-2xl p-7 hover:-translate-y-1.5 transition-all group">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="font-['Inter_Tight'] text-4xl font-extrabold text-[#C8DCB0]">03</div>
-                  <div className="w-11 h-11 rounded-xl bg-white flex items-center justify-center shadow-xs border border-[#08482D]/10 group-hover:scale-110 transition-transform">
-                    <IconStepCoding className="w-6 h-6 text-[#08482D]" />
+              <div className="scroll-reveal stagger-3 bg-[#F5F8EF] border border-[#08482D]/12 rounded-2xl p-5 sm:p-7 hover:-translate-y-1.5 transition-all group">
+                <div className="flex items-center justify-between mb-3.5">
+                  <div className="font-['Inter_Tight'] text-3xl sm:text-4xl font-extrabold text-[#C8DCB0]">03</div>
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white flex items-center justify-center shadow-xs border border-[#08482D]/10 group-hover:scale-110 transition-transform">
+                    <IconStepCoding className="w-5 h-5 sm:w-6 sm:h-6 text-[#08482D]" />
                   </div>
                 </div>
-                <h4 className="font-['Inter_Tight'] text-lg font-bold text-[#101410] mb-2">Lập Trình &amp; Nhập Liệu Chuẩn SEO</h4>
-                <p className="text-sm text-[#5E5E61] leading-relaxed">Triển khai code tối ưu tốc độ cao, cấu hình cổng thanh toán, domain, SSL và nhập liệu sản phẩm mẫu ban đầu.</p>
+                <h4 className="font-['Inter_Tight'] text-base sm:text-lg font-bold text-[#101410] mb-1.5">Lập Trình &amp; Nhập Liệu Chuẩn SEO</h4>
+                <p className="text-xs sm:text-sm text-[#5E5E61] leading-relaxed">Triển khai code tối ưu tốc độ cao, cấu hình cổng thanh toán, domain, SSL và nhập liệu sản phẩm mẫu ban đầu.</p>
               </div>
 
-              <div className="scroll-reveal stagger-4 bg-[#F5F8EF] border border-[#08482D]/12 rounded-2xl p-7 hover:-translate-y-1.5 transition-all group">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="font-['Inter_Tight'] text-4xl font-extrabold text-[#C8DCB0]">04</div>
-                  <div className="w-11 h-11 rounded-xl bg-white flex items-center justify-center shadow-xs border border-[#08482D]/10 group-hover:scale-110 transition-transform">
-                    <IconStepLaunch className="w-6 h-6 text-[#08482D]" />
+              <div className="scroll-reveal stagger-4 bg-[#F5F8EF] border border-[#08482D]/12 rounded-2xl p-5 sm:p-7 hover:-translate-y-1.5 transition-all group">
+                <div className="flex items-center justify-between mb-3.5">
+                  <div className="font-['Inter_Tight'] text-3xl sm:text-4xl font-extrabold text-[#C8DCB0]">04</div>
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white flex items-center justify-center shadow-xs border border-[#08482D]/10 group-hover:scale-110 transition-transform">
+                    <IconStepLaunch className="w-5 h-5 sm:w-6 sm:h-6 text-[#08482D]" />
                   </div>
                 </div>
-                <h4 className="font-['Inter_Tight'] text-lg font-bold text-[#101410] mb-2">Bàn Giao &amp; Hướng Dẫn 1-1</h4>
-                <p className="text-sm text-[#5E5E61] leading-relaxed">Bàn giao toàn bộ mã nguồn, hướng dẫn quản trị dễ dàng qua video/Zalo và kích hoạt bảo hành kỹ thuật trọn đời.</p>
+                <h4 className="font-['Inter_Tight'] text-base sm:text-lg font-bold text-[#101410] mb-1.5">Bàn Giao &amp; Hướng Dẫn 1-1</h4>
+                <p className="text-xs sm:text-sm text-[#5E5E61] leading-relaxed">Bàn giao toàn bộ mã nguồn, hướng dẫn quản trị dễ dàng qua video/Zalo và kích hoạt bảo hành kỹ thuật trọn đời.</p>
               </div>
             </div>
           </div>
@@ -1182,28 +1332,28 @@ export default function App() {
       {/* =====================================================================
           SECTION 4: ESTIMATED PRICING (Scroll Reveal with Intersection Observer)
           ===================================================================== */}
-      <section className="max-w-[1240px] mx-auto px-6 py-20" id="pricing">
-        <div className="scroll-reveal text-center max-w-2xl mx-auto mb-12">
+      <section className="max-w-[1240px] mx-auto px-4 sm:px-6 py-12 md:py-20" id="pricing">
+        <div className="scroll-reveal text-center max-w-2xl mx-auto mb-10 md:mb-12">
           <span className="inline-flex items-center gap-1 bg-[#DAE7C7] text-[#08482D] text-xs font-semibold px-3.5 py-1 rounded-full mb-3">
             Bảng Giá Minh Bạch
           </span>
-          <h2 className="font-['Inter_Tight'] text-3xl md:text-4xl font-bold tracking-tight text-[#101410] mb-3">
+          <h2 className="font-['Inter_Tight'] text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#101410] mb-2.5">
             Gói Dịch Vụ Thiết Kế Website Phù Hợp
           </h2>
-          <p className="text-base text-[#5E5E61]">
+          <p className="text-sm sm:text-base text-[#5E5E61]">
             Không phí ẩn, không phụ phí duy trì hàng tháng. Cam kết chỉ nhận thanh toán khi khách hàng ưng ý.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-7">
           {/* Plan 1 */}
-          <div className="scroll-reveal stagger-1 bg-white border border-[#08482D]/15 rounded-3xl p-8 flex flex-col shadow-xs">
-            <h3 className="font-['Inter_Tight'] text-2xl font-bold mb-1.5">Landing Page Giới Thiệu</h3>
-            <p className="text-sm text-[#5E5E61] mb-5">Phù hợp chạy quảng cáo ra mắt sản phẩm mới hoặc dịch vụ đơn lẻ.</p>
-            <div className="text-3xl font-extrabold text-[#08482D] font-['Inter_Tight'] mb-6">
-              3.500.000₫ <span className="text-sm font-medium text-slate-500">/ trọn gói</span>
+          <div className="scroll-reveal stagger-1 bg-white border border-[#08482D]/15 rounded-3xl p-6 sm:p-8 flex flex-col shadow-xs">
+            <h3 className="font-['Inter_Tight'] text-xl sm:text-2xl font-bold mb-1.5">Landing Page Giới Thiệu</h3>
+            <p className="text-xs sm:text-sm text-[#5E5E61] mb-4 sm:mb-5">Phù hợp chạy quảng cáo ra mắt sản phẩm mới hoặc dịch vụ đơn lẻ.</p>
+            <div className="text-2xl sm:text-3xl font-extrabold text-[#08482D] font-['Inter_Tight'] mb-5 sm:mb-6">
+              3.500.000₫ <span className="text-xs sm:text-sm font-medium text-slate-500">/ trọn gói</span>
             </div>
-            <ul className="space-y-3 text-sm text-[#101410] mb-8 flex-1">
+            <ul className="space-y-2.5 sm:space-y-3 text-xs sm:text-sm text-[#101410] mb-6 sm:mb-8 flex-1">
               <li className="flex items-center gap-2"><IconStudioCheck className="w-4 h-4 text-[#08482D] shrink-0" /> <span>Thiết kế 1 trang dài tối ưu chuyển đổi</span></li>
               <li className="flex items-center gap-2"><IconStudioCheck className="w-4 h-4 text-[#08482D] shrink-0" /> <span>Tặng Tên miền quốc tế + SSL bảo mật</span></li>
               <li className="flex items-center gap-2"><IconStudioCheck className="w-4 h-4 text-[#08482D] shrink-0" /> <span>Miễn phí Hosting tốc độ cao 1 năm</span></li>
@@ -1212,23 +1362,23 @@ export default function App() {
             </ul>
             <button
               onClick={() => handleSelectPlan('Landing Page Giới Thiệu (3.5 Triệu)')}
-              className="w-full h-12 bg-[#08482D] text-white rounded-full font-semibold text-sm hover:bg-[#0b5938] transition-colors cursor-pointer"
+              className="w-full h-11 sm:h-12 bg-[#08482D] text-white rounded-full font-semibold text-xs sm:text-sm hover:bg-[#0b5938] transition-colors cursor-pointer"
             >
               Đăng Ký Tư Vấn Gói Này
             </button>
           </div>
 
           {/* Plan 2 (Popular) */}
-          <div className="scroll-reveal stagger-2 bg-white border-2 border-[#08482D] rounded-3xl p-8 flex flex-col relative shadow-xl">
-            <div className="absolute -top-3.5 right-6 bg-[#08482D] text-white text-xs font-semibold px-3 py-1 rounded-full">
+          <div className="scroll-reveal stagger-2 bg-white border-2 border-[#08482D] rounded-3xl p-6 sm:p-8 flex flex-col relative shadow-xl">
+            <div className="absolute -top-3.5 right-6 bg-[#08482D] text-white text-[11px] sm:text-xs font-semibold px-3 py-1 rounded-full">
               PHỔ BIẾN NHẤT
             </div>
-            <h3 className="font-['Inter_Tight'] text-2xl font-bold mb-1.5">Doanh Nghiệp Chuẩn SEO</h3>
-            <p className="text-sm text-[#5E5E61] mb-5">Hoàn hảo cho công ty, thương hiệu xây dựng uy tín lâu dài.</p>
-            <div className="text-3xl font-extrabold text-[#08482D] font-['Inter_Tight'] mb-6">
-              6.800.000₫ <span className="text-sm font-medium text-slate-500">/ trọn gói</span>
+            <h3 className="font-['Inter_Tight'] text-xl sm:text-2xl font-bold mb-1.5">Doanh Nghiệp Chuẩn SEO</h3>
+            <p className="text-xs sm:text-sm text-[#5E5E61] mb-4 sm:mb-5">Hoàn hảo cho công ty, thương hiệu xây dựng uy tín lâu dài.</p>
+            <div className="text-2xl sm:text-3xl font-extrabold text-[#08482D] font-['Inter_Tight'] mb-5 sm:mb-6">
+              6.800.000₫ <span className="text-xs sm:text-sm font-medium text-slate-500">/ trọn gói</span>
             </div>
-            <ul className="space-y-3 text-sm text-[#101410] mb-8 flex-1">
+            <ul className="space-y-2.5 sm:space-y-3 text-xs sm:text-sm text-[#101410] mb-6 sm:mb-8 flex-1">
               <li className="flex items-center gap-2"><IconStudioCheck className="w-4 h-4 text-[#08482D] shrink-0" /> <span>Đầy đủ Trang Chủ, Giới Thiệu, Dịch Vụ, Tin Tức, Liên Hệ</span></li>
               <li className="flex items-center gap-2"><IconStudioCheck className="w-4 h-4 text-[#08482D] shrink-0" /> <span>Hệ thống CMS quản trị tiếng Việt cực dễ dùng</span></li>
               <li className="flex items-center gap-2"><IconStudioCheck className="w-4 h-4 text-[#08482D] shrink-0" /> <span>Tối ưu điểm Google PageSpeed 95+</span></li>
@@ -1238,20 +1388,20 @@ export default function App() {
             </ul>
             <button
               onClick={() => handleSelectPlan('Doanh Nghiệp Chuẩn SEO (6.8 Triệu)')}
-              className="w-full h-12 bg-[#08482D] text-white rounded-full font-semibold text-sm hover:bg-[#0b5938] transition-colors cursor-pointer"
+              className="w-full h-11 sm:h-12 bg-[#08482D] text-white rounded-full font-semibold text-xs sm:text-sm hover:bg-[#0b5938] transition-colors cursor-pointer"
             >
               Đăng Ký Tư Vấn Gói Này
             </button>
           </div>
 
           {/* Plan 3 */}
-          <div className="scroll-reveal stagger-3 bg-white border border-[#08482D]/15 rounded-3xl p-8 flex flex-col shadow-xs">
-            <h3 className="font-['Inter_Tight'] text-2xl font-bold mb-1.5">Bán Hàng &amp; E-Commerce</h3>
-            <p className="text-sm text-[#5E5E61] mb-5">Dành cho shop bán lẻ, nhãn hàng thời trang, mỹ phẩm, đồ gia dụng.</p>
-            <div className="text-3xl font-extrabold text-[#08482D] font-['Inter_Tight'] mb-6">
-              11.500.000₫ <span className="text-sm font-medium text-slate-500">/ trọn gói</span>
+          <div className="scroll-reveal stagger-3 bg-white border border-[#08482D]/15 rounded-3xl p-6 sm:p-8 flex flex-col shadow-xs">
+            <h3 className="font-['Inter_Tight'] text-xl sm:text-2xl font-bold mb-1.5">Bán Hàng &amp; E-Commerce</h3>
+            <p className="text-xs sm:text-sm text-[#5E5E61] mb-4 sm:mb-5">Dành cho shop bán lẻ, nhãn hàng thời trang, mỹ phẩm, đồ gia dụng.</p>
+            <div className="text-2xl sm:text-3xl font-extrabold text-[#08482D] font-['Inter_Tight'] mb-5 sm:mb-6">
+              11.500.000₫ <span className="text-xs sm:text-sm font-medium text-slate-500">/ trọn gói</span>
             </div>
-            <ul className="space-y-3 text-sm text-[#101410] mb-8 flex-1">
+            <ul className="space-y-2.5 sm:space-y-3 text-xs sm:text-sm text-[#101410] mb-6 sm:mb-8 flex-1">
               <li className="flex items-center gap-2"><IconStudioCheck className="w-4 h-4 text-[#08482D] shrink-0" /> <span>Giỏ hàng, Quản lý kho &amp; Biến thể sản phẩm</span></li>
               <li className="flex items-center gap-2"><IconStudioCheck className="w-4 h-4 text-[#08482D] shrink-0" /> <span>Tích hợp thanh toán QR Ngân Hàng, Momo, COD</span></li>
               <li className="flex items-center gap-2"><IconStudioCheck className="w-4 h-4 text-[#08482D] shrink-0" /> <span>Kết nối tự động đơn vị vận chuyển (GHN, GHTK)</span></li>
@@ -1261,7 +1411,7 @@ export default function App() {
             </ul>
             <button
               onClick={() => handleSelectPlan('Bán Hàng E-Commerce (11.5 Triệu)')}
-              className="w-full h-12 bg-[#08482D] text-white rounded-full font-semibold text-sm hover:bg-[#0b5938] transition-colors cursor-pointer"
+              className="w-full h-11 sm:h-12 bg-[#08482D] text-white rounded-full font-semibold text-xs sm:text-sm hover:bg-[#0b5938] transition-colors cursor-pointer"
             >
               Đăng Ký Tư Vấn Gói Này
             </button>
@@ -1272,8 +1422,8 @@ export default function App() {
       {/* =====================================================================
           SECTION 5: DETAILED CONSULTATION FORM (Scroll Reveal)
           ===================================================================== */}
-      <section className="max-w-[1240px] mx-auto px-6 py-10" id="consultation">
-        <div className="scroll-reveal bg-white border border-[#08482D]/15 rounded-3xl p-8 md:p-14 shadow-xl grid grid-cols-1 lg:grid-cols-5 gap-12">
+      <section className="max-w-[1240px] mx-auto px-4 sm:px-6 py-8 md:py-10" id="consultation">
+        <div className="scroll-reveal bg-white border border-[#08482D]/15 rounded-3xl p-5 sm:p-8 md:p-14 shadow-xl grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Left Guidance & Value */}
           <div className="lg:col-span-2 flex flex-col justify-between">
             <div>
@@ -1281,49 +1431,49 @@ export default function App() {
                 <WebcraftLogoIcon className="w-3.5 h-3.5 text-[#08482D]" />
                 Hỗ Trợ Trực Tiếp 24/7
               </span>
-              <h2 className="font-['Inter_Tight'] text-3xl font-bold text-[#101410] mb-3">
+              <h2 className="font-['Inter_Tight'] text-2xl sm:text-3xl font-bold text-[#101410] mb-2.5 sm:mb-3">
                 Nhận Tư Vấn &amp; Bản Phác Thảo Website Miễn Phí
               </h2>
-              <p className="text-sm leading-relaxed text-[#5E5E61] mb-6">
+              <p className="text-xs sm:text-sm leading-relaxed text-[#5E5E61] mb-5 sm:mb-6">
                 Hãy chia sẻ ý tưởng hoặc nhu cầu về website và chuyển đổi số của bạn. Đội ngũ <strong>Công ty TNHH Công Nghệ Số Dung Trọng</strong> sẽ phân tích và gửi lại phương án giao diện, tính năng cùng bảng dự toán chi tiết trong <strong>30 phút</strong>.
               </p>
 
-              <div className="space-y-4 mb-8">
-                <div className="flex gap-3.5 items-start p-3 bg-[#F5F8EF]/80 rounded-xl border border-[#08482D]/8 hover:border-[#08482D]/25 transition-all">
-                  <div className="w-10 h-10 rounded-xl bg-white border border-[#08482D]/12 flex items-center justify-center shrink-0 shadow-xs">
+              <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+                <div className="flex gap-3 items-start p-3 bg-[#F5F8EF]/80 rounded-xl border border-[#08482D]/8 hover:border-[#08482D]/25 transition-all">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white border border-[#08482D]/12 flex items-center justify-center shrink-0 shadow-xs">
                     <IconFreePledge className="w-5 h-5 text-[#08482D]" />
                   </div>
                   <div>
-                    <div className="font-semibold text-sm text-[#101410]">Không Ràng Buộc Chi Phí</div>
-                    <div className="text-xs text-[#5E5E61] mt-0.5">Nhận tư vấn, báo giá và demo giao diện hoàn toàn miễn phí.</div>
+                    <div className="font-semibold text-xs sm:text-sm text-[#101410]">Không Ràng Buộc Chi Phí</div>
+                    <div className="text-[11px] sm:text-xs text-[#5E5E61] mt-0.5">Nhận tư vấn, báo giá và demo giao diện hoàn toàn miễn phí.</div>
                   </div>
                 </div>
 
-                <div className="flex gap-3.5 items-start p-3 bg-[#F5F8EF]/80 rounded-xl border border-[#08482D]/8 hover:border-[#08482D]/25 transition-all">
-                  <div className="w-10 h-10 rounded-xl bg-white border border-[#08482D]/12 flex items-center justify-center shrink-0 shadow-xs">
+                <div className="flex gap-3 items-start p-3 bg-[#F5F8EF]/80 rounded-xl border border-[#08482D]/8 hover:border-[#08482D]/25 transition-all">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white border border-[#08482D]/12 flex items-center justify-center shrink-0 shadow-xs">
                     <IconNdaLock className="w-5 h-5 text-[#08482D]" />
                   </div>
                   <div>
-                    <div className="font-semibold text-sm text-[#101410]">Bảo Mật Ý Tưởng Tuyệt Đối</div>
-                    <div className="text-xs text-[#5E5E61] mt-0.5">Mọi thông tin kinh doanh và tài liệu của bạn được cam kết bảo mật 100%.</div>
+                    <div className="font-semibold text-xs sm:text-sm text-[#101410]">Bảo Mật Ý Tưởng Tuyệt Đối</div>
+                    <div className="text-[11px] sm:text-xs text-[#5E5E61] mt-0.5">Mọi thông tin kinh doanh và tài liệu của bạn được cam kết bảo mật 100%.</div>
                   </div>
                 </div>
 
-                <div className="flex gap-3.5 items-start p-3 bg-[#F5F8EF]/80 rounded-xl border border-[#08482D]/8 hover:border-[#08482D]/25 transition-all">
-                  <div className="w-10 h-10 rounded-xl bg-white border border-[#08482D]/12 flex items-center justify-center shrink-0 shadow-xs">
+                <div className="flex gap-3 items-start p-3 bg-[#F5F8EF]/80 rounded-xl border border-[#08482D]/8 hover:border-[#08482D]/25 transition-all">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white border border-[#08482D]/12 flex items-center justify-center shrink-0 shadow-xs">
                     <IconDirectChat className="w-5 h-5 text-[#08482D]" />
                   </div>
                   <div>
-                    <div className="font-semibold text-sm text-[#101410]">Liên Hệ Trực Tiếp Qua Zalo / Hotline</div>
-                    <div className="text-xs text-[#5E5E61] mt-0.5">Chuyên viên kỹ thuật phụ trách tư vấn trực tiếp, không qua trung gian.</div>
+                    <div className="font-semibold text-xs sm:text-sm text-[#101410]">Liên Hệ Trực Tiếp Qua Zalo / Hotline</div>
+                    <div className="text-[11px] sm:text-xs text-[#5E5E61] mt-0.5">Chuyên viên kỹ thuật phụ trách tư vấn trực tiếp, không qua trung gian.</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="p-4 bg-[#F5F8EF] rounded-2xl border border-[#08482D]/12">
+            <div className="p-3.5 sm:p-4 bg-[#F5F8EF] rounded-2xl border border-[#08482D]/12">
               <div className="text-xs text-[#5E5E61] mb-1">Cần tư vấn gấp? Gọi ngay chuyên viên:</div>
-              <a href="tel:0832555500" className="text-lg font-bold text-[#08482D] font-['Inter_Tight'] hover:underline flex items-center gap-2">
+              <a href="tel:0832555500" className="text-base sm:text-lg font-bold text-[#08482D] font-['Inter_Tight'] hover:underline flex items-center gap-2">
                 <IconDirectChat className="w-5 h-5 text-[#08482D]" />
                 <span>0832.555.500 (Zalo 24/7)</span>
               </a>
@@ -1332,8 +1482,8 @@ export default function App() {
 
           {/* Right: Interactive Form */}
           <div className="lg:col-span-3">
-            <form onSubmit={handleSubmitConsultation} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmitConsultation} className="space-y-3.5 sm:space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-semibold text-[#101410]">
                     Họ và tên của bạn <span className="text-red-500">*</span>
@@ -1344,7 +1494,7 @@ export default function App() {
                     value={clientName}
                     onChange={(e) => setClientName(e.target.value)}
                     placeholder="Ví dụ: Nguyễn Văn Hưng"
-                    className="w-full h-12 px-4 bg-[#FAFCF7] border border-[#08482D]/20 rounded-xl text-sm focus:bg-white focus:border-[#08482D] focus:ring-2 focus:ring-[#08482D]/10 outline-none transition-all"
+                    className="w-full h-11 sm:h-12 px-3.5 sm:px-4 bg-[#FAFCF7] border border-[#08482D]/20 rounded-xl text-sm focus:bg-white focus:border-[#08482D] focus:ring-2 focus:ring-[#08482D]/10 outline-none transition-all"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
@@ -1357,12 +1507,12 @@ export default function App() {
                     value={clientPhone}
                     onChange={(e) => setClientPhone(e.target.value)}
                     placeholder="09xxxxxxxx"
-                    className="w-full h-12 px-4 bg-[#FAFCF7] border border-[#08482D]/20 rounded-xl text-sm focus:bg-white focus:border-[#08482D] focus:ring-2 focus:ring-[#08482D]/10 outline-none transition-all"
+                    className="w-full h-11 sm:h-12 px-3.5 sm:px-4 bg-[#FAFCF7] border border-[#08482D]/20 rounded-xl text-sm focus:bg-white focus:border-[#08482D] focus:ring-2 focus:ring-[#08482D]/10 outline-none transition-all"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-semibold text-[#101410]">Email (nhận báo giá PDF)</label>
                   <input
@@ -1370,7 +1520,7 @@ export default function App() {
                     value={clientEmail}
                     onChange={(e) => setClientEmail(e.target.value)}
                     placeholder="tenban@congty.com"
-                    className="w-full h-12 px-4 bg-[#FAFCF7] border border-[#08482D]/20 rounded-xl text-sm focus:bg-white focus:border-[#08482D] focus:ring-2 focus:ring-[#08482D]/10 outline-none transition-all"
+                    className="w-full h-11 sm:h-12 px-3.5 sm:px-4 bg-[#FAFCF7] border border-[#08482D]/20 rounded-xl text-sm focus:bg-white focus:border-[#08482D] focus:ring-2 focus:ring-[#08482D]/10 outline-none transition-all"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
@@ -1378,7 +1528,7 @@ export default function App() {
                   <select
                     value={clientIndustry}
                     onChange={(e) => setClientIndustry(e.target.value)}
-                    className="w-full h-12 px-4 bg-[#FAFCF7] border border-[#08482D]/20 rounded-xl text-sm focus:bg-white focus:border-[#08482D] focus:ring-2 focus:ring-[#08482D]/10 outline-none transition-all cursor-pointer"
+                    className="w-full h-11 sm:h-12 px-3.5 sm:px-4 bg-[#FAFCF7] border border-[#08482D]/20 rounded-xl text-sm focus:bg-white focus:border-[#08482D] focus:ring-2 focus:ring-[#08482D]/10 outline-none transition-all cursor-pointer"
                   >
                     <option value="Bán lẻ / Thời trang / Mỹ phẩm">Bán lẻ / Thời trang / Mỹ phẩm</option>
                     <option value="Doanh nghiệp B2B / Sản xuất">Doanh nghiệp B2B / Sản xuất</option>
@@ -1392,7 +1542,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-semibold text-[#101410]">Mẫu website bạn đang quan tâm</label>
                   <input
@@ -1400,7 +1550,7 @@ export default function App() {
                     value={selectedTemplateName}
                     onChange={(e) => setSelectedTemplateName(e.target.value)}
                     placeholder="Tất cả các mẫu hoặc tên mẫu ưng ý"
-                    className="w-full h-12 px-4 bg-[#FAFCF7] border border-[#08482D]/20 rounded-xl text-sm focus:bg-white focus:border-[#08482D] focus:ring-2 focus:ring-[#08482D]/10 outline-none transition-all"
+                    className="w-full h-11 sm:h-12 px-3.5 sm:px-4 bg-[#FAFCF7] border border-[#08482D]/20 rounded-xl text-sm focus:bg-white focus:border-[#08482D] focus:ring-2 focus:ring-[#08482D]/10 outline-none transition-all"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
@@ -1408,7 +1558,7 @@ export default function App() {
                   <select
                     value={clientBudget}
                     onChange={(e) => setClientBudget(e.target.value)}
-                    className="w-full h-12 px-4 bg-[#FAFCF7] border border-[#08482D]/20 rounded-xl text-sm focus:bg-white focus:border-[#08482D] focus:ring-2 focus:ring-[#08482D]/10 outline-none transition-all cursor-pointer"
+                    className="w-full h-11 sm:h-12 px-3.5 sm:px-4 bg-[#FAFCF7] border border-[#08482D]/20 rounded-xl text-sm focus:bg-white focus:border-[#08482D] focus:ring-2 focus:ring-[#08482D]/10 outline-none transition-all cursor-pointer"
                   >
                     <option value="Dưới 5 triệu (Landing page nhanh)">Dưới 5 triệu (Landing page nhanh)</option>
                     <option value="5 - 10 triệu (Doanh nghiệp chuẩn SEO)">5 - 10 triệu (Doanh nghiệp chuẩn SEO)</option>
@@ -1425,14 +1575,14 @@ export default function App() {
                   value={clientNotes}
                   onChange={(e) => setClientNotes(e.target.value)}
                   placeholder="Mô tả ngắn gọn về sản phẩm, link website bạn thích, hoặc thời gian bạn dự kiến khai trương website..."
-                  className="w-full p-4 bg-[#FAFCF7] border border-[#08482D]/20 rounded-xl text-sm focus:bg-white focus:border-[#08482D] focus:ring-2 focus:ring-[#08482D]/10 outline-none transition-all resize-y"
+                  className="w-full p-3.5 sm:p-4 bg-[#FAFCF7] border border-[#08482D]/20 rounded-xl text-sm focus:bg-white focus:border-[#08482D] focus:ring-2 focus:ring-[#08482D]/10 outline-none transition-all resize-y"
                 ></textarea>
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting || isSuccess}
-                className={`w-full h-14 rounded-full font-semibold text-base flex items-center justify-center gap-2.5 transition-all cursor-pointer shadow-md mt-2 disabled:opacity-95 group ${
+                className={`w-full min-h-[50px] sm:h-14 px-5 py-3 rounded-full font-semibold text-sm sm:text-base flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md mt-2 disabled:opacity-95 group whitespace-nowrap ${
                   isSuccess
                     ? 'bg-[#0b633d] text-white ring-4 ring-[#DAE7C7]/60 shadow-lg scale-[1.01]'
                     : isSubmitting
@@ -1442,24 +1592,25 @@ export default function App() {
               >
                 {isSuccess ? (
                   <>
-                    <IconAnimatedCheck className="w-6 h-6 text-[#DAE7C7]" color="#DAE7C7" />
+                    <IconAnimatedCheck className="w-5 h-5 sm:w-6 sm:h-6 text-[#DAE7C7] shrink-0" color="#DAE7C7" />
                     <span className="font-bold tracking-wide">Đã gửi thành công!</span>
                   </>
                 ) : isSubmitting ? (
                   <>
-                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    <span className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin shrink-0"></span>
                     <span>Đang gửi thông tin...</span>
                   </>
                 ) : (
                   <>
-                    <span>Gửi Yêu Cầu Tư Vấn &amp; Nhận Báo Giá Ngay</span>
-                    <IconSendPaperPlane className="w-5 h-5 text-white group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform" />
+                    <span className="sm:hidden">Gửi Yêu Cầu &amp; Nhận Báo Giá</span>
+                    <span className="max-sm:hidden">Gửi Yêu Cầu Tư Vấn &amp; Nhận Báo Giá Ngay</span>
+                    <IconSendPaperPlane className="w-4 h-4 sm:w-5 sm:h-5 text-white shrink-0 group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform" />
                   </>
                 )}
               </button>
-              <div className="text-[12px] text-slate-500 text-center mt-2 flex items-center justify-center gap-1.5">
+              <div className="text-[11px] sm:text-[12px] text-slate-500 text-center mt-2 flex items-center justify-center gap-1.5 leading-snug">
                 <IconShieldWarranty className="w-3.5 h-3.5 text-[#08482D] shrink-0" />
-                <span>Cam kết bảo mật thông tin. Chúng tôi sẽ liên hệ lại qua Zalo/Điện thoại trong vòng 30 phút.</span>
+                <span>Cam kết bảo mật thông tin. Liên hệ lại qua Zalo/SĐT trong 30 phút.</span>
               </div>
             </form>
           </div>
@@ -1481,13 +1632,13 @@ export default function App() {
             </button>
 
             {/* Top Bar: Title, Category Badge, CTA Button */}
-            <div className="modal-cascade-1 flex items-center justify-between flex-wrap gap-3 mb-5">
+            <div className="modal-cascade-1 flex items-center justify-between flex-wrap gap-3 mb-5 pr-8 sm:pr-10">
               <div>
                 <span className="inline-block px-2.5 py-1 bg-[#DAE7C7] text-[#08482D] rounded-full text-xs font-bold uppercase mb-1.5">
                   {activeModalItem.categoryName}
                 </span>
-                <h3 className="font-['Inter_Tight'] text-2xl font-bold text-[#101410]">{activeModalItem.title}</h3>
-                <p className="text-sm text-[#5E5E61] mt-1">{activeModalItem.desc}</p>
+                <h3 className="font-['Inter_Tight'] text-xl sm:text-2xl font-bold text-[#101410]">{activeModalItem.title}</h3>
+                <p className="text-xs sm:text-sm text-[#5E5E61] mt-1">{activeModalItem.desc}</p>
               </div>
 
               <button
@@ -1495,7 +1646,7 @@ export default function App() {
                   handleSelectTemplate(activeModalItem.title);
                   setActiveModalItem(null);
                 }}
-                className="px-6 h-11 bg-[#08482D] text-white rounded-full text-xs font-semibold hover:bg-[#0b5938] transition-colors cursor-pointer"
+                className="w-full sm:w-auto px-5 sm:px-6 h-11 bg-[#08482D] text-white rounded-full text-xs font-semibold hover:bg-[#0b5938] transition-colors cursor-pointer whitespace-nowrap"
               >
                 Chọn Mẫu Này &amp; Nhận Tư Vấn
               </button>
@@ -1635,6 +1786,101 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* =====================================================================
+          FLOATING ZALO WIDGET + MOBILE/TABLET BOTTOM NAVIGATION BAR (<= 1024px)
+          Synchronized with Forest Green & Mint Brand Identity
+          ===================================================================== */}
+      {/* Floating Zalo Chat Bubble */}
+      <div className="fixed bottom-20 lg:bottom-6 right-4 z-40 flex items-center gap-2.5">
+        {showZaloBubble && (
+          <div className="bg-white text-[#101410] px-3.5 py-2 rounded-2xl shadow-[0_8px_24px_rgba(8,72,45,0.16)] border border-[#08482D]/15 flex items-center gap-2 text-xs sm:text-sm font-bold">
+            <span>CNS Dung Trọng xin chào!</span>
+            <button
+              type="button"
+              onClick={() => setShowZaloBubble(false)}
+              className="text-[#08482D] hover:opacity-75 font-black text-base leading-none cursor-pointer"
+              aria-label="Đóng lời chào"
+            >
+              &times;
+            </button>
+          </div>
+        )}
+        <a
+          href="https://zalo.me/0832555500"
+          target="_blank"
+          rel="noreferrer"
+          className="w-12 h-12 sm:w-13 sm:h-13 rounded-full bg-white p-1 shadow-[0_8px_25px_rgba(0,104,255,0.38)] border-2 border-[#0068ff] flex items-center justify-center hover:scale-105 transition-transform"
+          aria-label="Chat Zalo CNS Dung Trọng"
+        >
+          <div className="w-full h-full rounded-full bg-[#0068ff] flex items-center justify-center text-white font-['Inter_Tight'] font-extrabold text-xs tracking-tight">
+            Zalo
+          </div>
+        </a>
+      </div>
+
+      {/* Mobile & Tablet Fixed Bottom App Navigation Bar */}
+      <nav
+        aria-label="Thanh điều hướng di động"
+        className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#08482D]/15 shadow-[0_-6px_24px_rgba(8,72,45,0.08)] h-16 px-2 flex items-center justify-around select-none"
+      >
+        <a
+          href="#hero"
+          onClick={() => setActiveMobileTab('home')}
+          className={`flex flex-col items-center justify-center gap-0.5 flex-1 py-1 transition-colors ${
+            activeMobileTab === 'home' ? 'text-[#08482D]' : 'text-slate-400 hover:text-[#08482D]'
+          }`}
+        >
+          <Home className="w-5 h-5" strokeWidth={2.2} />
+          <span className="text-[11px] font-bold">Trang chủ</span>
+        </a>
+
+        <a
+          href="#showcase"
+          onClick={() => setActiveMobileTab('showcase')}
+          className={`flex flex-col items-center justify-center gap-0.5 flex-1 py-1 transition-colors ${
+            activeMobileTab === 'showcase' ? 'text-[#08482D]' : 'text-slate-400 hover:text-[#08482D]'
+          }`}
+        >
+          <LayoutGrid className="w-5 h-5" strokeWidth={2.2} />
+          <span className="text-[11px] font-semibold">Kho mẫu</span>
+        </a>
+
+        {/* Center Floating Primary CTA Button (Nhận Tư Vấn) */}
+        <div className="relative -top-3.5 flex flex-col items-center justify-center px-1">
+          <a
+            href="#consultation"
+            onClick={() => setActiveMobileTab('consultation')}
+            className="w-14 h-14 rounded-full bg-gradient-to-b from-[#0b5e3b] to-[#08482D] text-white shadow-[0_6px_18px_rgba(8,72,45,0.4)] border-4 border-white flex flex-col items-center justify-center active:scale-95 transition-transform"
+            aria-label="Đăng ký nhận tư vấn"
+          >
+            <Sparkles className="w-5 h-5 text-[#DAE7C7]" />
+            <span className="text-[8.5px] font-bold tracking-tight leading-none mt-0.5">Tư vấn</span>
+          </a>
+        </div>
+
+        <a
+          href="#pricing"
+          onClick={() => setActiveMobileTab('pricing')}
+          className={`flex flex-col items-center justify-center gap-0.5 flex-1 py-1 transition-colors ${
+            activeMobileTab === 'pricing' ? 'text-[#08482D]' : 'text-slate-400 hover:text-[#08482D]'
+          }`}
+        >
+          <FileText className="w-5 h-5" strokeWidth={2.2} />
+          <span className="text-[11px] font-semibold">Bảng giá</span>
+        </a>
+
+        <a
+          href="tel:0832555500"
+          onClick={() => setActiveMobileTab('support')}
+          className={`flex flex-col items-center justify-center gap-0.5 flex-1 py-1 transition-colors ${
+            activeMobileTab === 'support' ? 'text-[#08482D]' : 'text-slate-400 hover:text-[#08482D]'
+          }`}
+        >
+          <Headphones className="w-5 h-5" strokeWidth={2.2} />
+          <span className="text-[11px] font-semibold">Gọi ngay</span>
+        </a>
+      </nav>
     </div>
   );
 }
