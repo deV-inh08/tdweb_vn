@@ -1,12 +1,13 @@
-
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useEffect, useState } from 'react';
-import type { TemplateItem } from './types';
+import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useScrollReveal } from './hooks/useScrollReveal';
+import { DataProvider } from './context/DataContext';
+import { useAppStore } from './store/useAppStore';
 import MobileHeader from './components/layout/MobileHeader';
 import Footer from './components/layout/Footer';
 import BottomTabBar from './components/layout/BottomTabBar';
@@ -17,15 +18,29 @@ import Pricing from './components/sections/Pricing';
 import Consultation from './components/sections/Consultation';
 import TemplateModal from './components/ui/TemplateModal';
 import Toast from './components/ui/Toast';
+import AdminLoginPage from './pages/admin/AdminLoginPage';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 
-export default function App() {
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [activeModalItem, setActiveModalItem] = useState<TemplateItem | null>(null);
-  const [selectedTemplateName, setSelectedTemplateName] = useState<string>('');
-  const [clientNotes, setClientNotes] = useState<string>('');
-  const [showToast, setShowToast] = useState<boolean>(false);
+function StorefrontLanding() {
+  const {
+    templates,
+    pricingPlans,
+    categoryFilter,
+    activeModalItem,
+    selectedTemplateName,
+    clientNotes,
+    showToast,
+    setCategoryFilter,
+    setActiveModalItem,
+    setSelectedTemplateName,
+    setClientNotes,
+    setShowToast,
+  } = useAppStore();
 
-  useScrollReveal(categoryFilter);
+  const visibleTemplatesCount = templates.filter((t) => t.isVisible !== false).length;
+
+  useScrollReveal(`${categoryFilter}-${visibleTemplatesCount}-${pricingPlans.length}`);
+
   const handleSelectTemplate = (templateName: string) => {
     setSelectedTemplateName(templateName);
     const formElem = document.getElementById('consultation');
@@ -59,7 +74,7 @@ export default function App() {
       window.removeEventListener('keydown', onKeyDown);
       document.body.style.overflow = '';
     };
-  }, [activeModalItem]);
+  }, [activeModalItem, setActiveModalItem]);
 
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] font-sans max-lg:pb-24">
@@ -89,5 +104,20 @@ export default function App() {
       <Footer setCategoryFilter={setCategoryFilter} />
       <BottomTabBar />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <DataProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<StorefrontLanding />} />
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/admin" element={<AdminDashboardPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </DataProvider>
   );
 }

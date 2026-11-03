@@ -1,21 +1,26 @@
 import { useEffect } from 'react';
 import type { RefObject } from 'react';
+import { useData } from '../../context/DataContext';
 import { TEMPLATES } from '../../data/templates';
 import type { TemplateItem } from '../../types';
 
 /**
- * BÄƒng chuyá»n 3D hĂ¬nh trá»¥ trĂªn PC: dá»±ng tháº» báº±ng DOM, kĂ©o tháº£ + tá»± cháº¡y.
+ * Băng chuyền 3D hình trụ trên PC: dựng thẻ bằng DOM, kéo thả + tự chạy.
  */
 export function useCarousel3D(
   trackRef: RefObject<HTMLDivElement | null>,
   setActiveModalItem: (t: TemplateItem) => void
 ) {
+  const { visibleTemplates } = useData();
+
   // =========================================================================
   // 3D CYLINDER CAROUSEL RENDER LOOP
   // =========================================================================
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
+
+    const sourceList = visibleTemplates.length > 0 ? visibleTemplates : TEMPLATES;
 
     const cardsElements: {
       el: HTMLDivElement;
@@ -30,7 +35,7 @@ export function useCarousel3D(
     track.innerHTML = '';
 
     for (let i = 0; i < NUM_CARDS; i++) {
-      const tData = TEMPLATES[i];
+      const tData = sourceList[i % sourceList.length];
       const card = document.createElement('div');
       card.className = 'video-card';
       card.setAttribute('role', 'button');
@@ -141,7 +146,7 @@ export function useCarousel3D(
       track.classList.remove('is-dragging');
       try {
         track.releasePointerCapture(e.pointerId);
-      } catch (err) {}
+      } catch {}
 
       velocity = currentDragVelocity;
       if (Math.abs(velocity) > 1600) {
@@ -283,5 +288,5 @@ export function useCarousel3D(
       track.removeEventListener('pointerup', onPointerUp);
       track.removeEventListener('pointercancel', onPointerUp);
     };
-  }, [trackRef, setActiveModalItem]);
+  }, [trackRef, setActiveModalItem, visibleTemplates]);
 }

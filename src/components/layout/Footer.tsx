@@ -1,10 +1,14 @@
+import { Link } from 'react-router-dom';
+import { useData } from '../../context/DataContext';
 
 interface Props {
   setCategoryFilter: (c: string) => void;
 }
 
-/** ChĂ¢n trang: thĂ´ng tin cĂ´ng ty, liĂªn káº¿t */
+/** Chân trang: thông tin công ty, liên kết */
 export default function Footer({ setCategoryFilter }: Props) {
+  const { settings } = useData();
+
   return (
     <>
       {/* =====================================================================
@@ -14,19 +18,21 @@ export default function Footer({ setCategoryFilter }: Props) {
         <div className="max-w-[1240px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 mb-12">
           <div className="md:col-span-5">
             <h4 className="font-['Inter_Tight'] text-xl md:text-2xl text-white font-bold mb-2">
-              CÔNG TY TNHH CÔNG NGHỆ SỐ DUNG TRỌNG
+              {settings.companyName}
             </h4>
             <div className="text-xs text-[var(--teal-soft)] font-medium mb-3">
-              Tên viết tắt: CÔNG TY TNHH CNS DUNG TRỌNG &bull; MST: 1900640597
+              Tên viết tắt: {settings.shortName} &bull; MST: {settings.taxCode}
             </div>
             <p className="text-sm leading-relaxed text-[#94A3B8] mb-4">
               Cung cấp các giải pháp công nghệ thông tin, phần mềm, thiết kế website chuẩn SEO và chuyển đổi số toàn diện cho cá nhân, cửa hàng, tổ chức và doanh nghiệp.
             </p>
             <div className="text-xs text-white space-y-1">
-              <div><strong>Người đại diện pháp luật:</strong> Lý Hữu Trọng</div>
+              <div><strong>Người đại diện pháp luật:</strong> {settings.representative}</div>
               <div>
                 <strong>Hotline / Zalo 24/7:</strong>{' '}
-                <a href="tel:0832555500" className="text-[var(--teal-soft)] hover:underline font-semibold">0832.555.500</a>
+                <a href={`tel:${settings.hotline}`} className="text-[var(--teal-soft)] hover:underline font-semibold">
+                  {settings.hotlineDisplay}
+                </a>
               </div>
             </div>
           </div>
@@ -58,26 +64,29 @@ export default function Footer({ setCategoryFilter }: Props) {
             <div className="text-xs leading-relaxed text-[#94A3B8] space-y-2.5">
               <p>
                 <strong className="text-white">📍 Trụ sở chính:</strong><br />
-                Số 17 Lê Văn Năm, Khóm 17, Phường Bạc Liêu, Tỉnh Cà Mau, Việt Nam
+                {settings.headOffice}
               </p>
               <p>
                 <strong className="text-white">📍 Chi nhánh TP. Hồ Chí Minh:</strong><br />
-                18/1/21 Hoàng Hữu Nam, Phường Long Bình, Thành phố Hồ Chí Minh<br />
-                <span className="text-[11px] opacity-85">(MST chi nhánh: 1900640597-001)</span>
+                {settings.hcmBranch}<br />
+                <span className="text-[11px] opacity-85">(MST chi nhánh: {settings.taxCode}-001)</span>
               </p>
               <p>
-                📞 Điện thoại: <a href="tel:0832555500" className="text-white hover:underline">0832555500</a>
+                📞 Điện thoại: <a href={`tel:${settings.hotline}`} className="text-white hover:underline">{settings.hotlineDisplay}</a>
               </p>
             </div>
           </div>
         </div>
 
         <div className="max-w-[1240px] mx-auto pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-xs text-[#94A3B8] gap-4">
-          <div>&copy; {new Date().getFullYear()} CÔNG TY TNHH CÔNG NGHỆ SỐ DUNG TRỌNG (MST: 1900640597). All rights reserved.</div>
-          <div className="flex gap-5">
+          <div>&copy; {new Date().getFullYear()} {settings.companyName} (MST: {settings.taxCode}). All rights reserved.</div>
+          <div className="flex items-center gap-5">
             <span>Bảo mật thông tin</span>
             <span>Cam kết tiến độ</span>
             <span>Bảo hành trọn đời</span>
+            <Link to="/admin" className="text-slate-600 hover:text-[var(--teal-soft)] transition-colors" title="Trang quản trị Admin">
+              Admin CMS
+            </Link>
           </div>
         </div>
       </footer>

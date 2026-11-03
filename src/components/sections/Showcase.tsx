@@ -5,7 +5,7 @@ import {
   IconInspectEye,
   IconStudioCheck
 } from '../CustomIcons.tsx';
-import { TEMPLATES } from '../../data/templates';
+import { useData } from '../../context/DataContext';
 import type { TemplateItem } from '../../types';
 
 interface Props {
@@ -15,11 +15,12 @@ interface Props {
   handleSelectTemplate: (name: string) => void;
 }
 
-/** SECTION 2: Kho máº«u + bá»™ lá»c danh má»¥c */
+/** SECTION 2: Kho mẫu + bộ lọc danh mục */
 export default function Showcase({ categoryFilter, setCategoryFilter, setActiveModalItem, handleSelectTemplate }: Props) {
+  const { visibleTemplates } = useData();
   const filteredTemplates = categoryFilter === 'all' 
-    ? TEMPLATES 
-    : TEMPLATES.filter((t) => t.category === categoryFilter);
+    ? visibleTemplates 
+    : visibleTemplates.filter((t) => t.category === categoryFilter);
 
   return (
     <>
@@ -49,7 +50,7 @@ export default function Showcase({ categoryFilter, setCategoryFilter, setActiveM
                 : 'bg-white border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]'
             }`}
           >
-            Tất Cả Mẫu (10)
+            Tất Cả Mẫu ({visibleTemplates.length})
           </button>
           <button
             onClick={() => setCategoryFilter('ecommerce')}
@@ -118,7 +119,7 @@ export default function Showcase({ categoryFilter, setCategoryFilter, setActiveM
           {filteredTemplates.map((item, idx) => (
             <div
               key={item.id}
-              className={`scroll-reveal stagger-${(idx % 4) + 1} bg-white border border-[var(--border)] rounded-2xl overflow-hidden shadow-[var(--shadow)] hover:-translate-y-1.5 hover:shadow-[0_12px_32px_rgba(37,99,235,0.18)] hover:border-[var(--primary)]/35 transition-all flex flex-col`}
+              className={`scroll-reveal is-visible stagger-${(idx % 4) + 1} bg-white border border-[var(--border)] rounded-2xl overflow-hidden shadow-[var(--shadow)] hover:-translate-y-1.5 hover:shadow-[0_12px_32px_rgba(37,99,235,0.18)] hover:border-[var(--primary)]/35 transition-all flex flex-col`}
             >
               {/* Mini Browser Bar & Parallax Banner */}
               <div

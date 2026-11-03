@@ -8,6 +8,7 @@ import {
   IconSendPaperPlane,
   IconAnimatedCheck
 } from '../CustomIcons.tsx';
+import { useAppStore } from '../../store/useAppStore';
 
 interface Props {
   selectedTemplateName: string;
@@ -17,7 +18,7 @@ interface Props {
   setShowToast: (v: boolean) => void;
 }
 
-/** SECTION 5: Form Ä‘Äƒng kĂ½ tÆ° váº¥n */
+/** SECTION 5: Form đăng ký tư vấn */
 export default function Consultation({
   selectedTemplateName,
   setSelectedTemplateName,
@@ -25,8 +26,11 @@ export default function Consultation({
   setClientNotes,
   setShowToast,
 }: Props) {
+  const addLead = useAppStore((s) => s.addLead);
+  const settings = useAppStore((s) => s.settings);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [formError, setFormError] = useState<string | null>(null);
   // Form State
   const [clientName, setClientName] = useState<string>('');
   const [clientPhone, setClientPhone] = useState<string>('');
@@ -34,12 +38,12 @@ export default function Consultation({
   const [clientIndustry, setClientIndustry] = useState<string>('Bán lẻ / Thời trang / Mỹ phẩm');
   const [clientBudget, setClientBudget] = useState<string>('5 - 10 triệu (Doanh nghiệp chuẩn SEO)');
 
-  const handleSubmitConsultation = (e: React.FormEvent) => {
+  const handleSubmitConsultation = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError(null);
     setIsSubmitting(true);
 
-    const submission = {
-      id: 'WC-' + Math.floor(1000 + Math.random() * 9000),
+    const res = await addLead({
       name: clientName,
       phone: clientPhone,
       email: clientEmail,
@@ -47,14 +51,14 @@ export default function Consultation({
       template: selectedTemplateName || 'Tư vấn theo phong cách riêng',
       budget: clientBudget,
       notes: clientNotes,
-      timestamp: new Date().toISOString()
-    };
+      status: 'new',
+    });
 
-    try {
-      const list = JSON.parse(localStorage.getItem('webcraft_leads') || '[]');
-      list.unshift(submission);
-      localStorage.setItem('webcraft_leads', JSON.stringify(list));
-    } catch (err) {}
+    if (!res.ok) {
+      setIsSubmitting(false);
+      setFormError(res.error || 'Thông tin chưa hợp lệ, vui lòng kiểm tra lại.');
+      return;
+    }
 
     setTimeout(() => {
       setIsSubmitting(false);
@@ -96,7 +100,7 @@ export default function Consultation({
                 Nhận Tư Vấn &amp; Bản Phác Thảo Website Miễn Phí
               </h2>
               <p className="text-xs sm:text-sm leading-relaxed text-[var(--text-muted)] mb-5 sm:mb-6">
-                Hãy chia sẻ ý tưởng hoặc nhu cầu về website và chuyển đổi số của bạn. Đội ngũ <strong>Công ty TNHH Công Nghệ Số Dung Trọng</strong> sẽ phân tích và gửi lại phương án giao diện, tính năng cùng bảng dự toán chi tiết trong <strong>30 phút</strong>.
+                Hãy chia sẻ ý tưởng hoặc nhu cầu về website và chuyển đổi số của bạn. Đội ngũ <strong>{settings.companyName}</strong> sẽ phân tích và gửi lại phương án giao diện, tính năng cùng bảng dự toán chi tiết trong <strong>30 phút</strong>.
               </p>
 
               <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
@@ -134,16 +138,21 @@ export default function Consultation({
 
             <div className="p-3.5 sm:p-4 bg-[var(--bg-soft)] rounded-2xl border border-[var(--border)]">
               <div className="text-xs text-[var(--text-muted)] mb-1">Cần tư vấn gấp? Gọi ngay chuyên viên:</div>
-              <a href="tel:0832555500" className="text-base sm:text-lg font-bold text-[var(--primary)] font-['Inter_Tight'] hover:underline flex items-center gap-2">
+              <a href={`tel:${settings.hotline}`} className="text-base sm:text-lg font-bold text-[var(--primary)] font-['Inter_Tight'] hover:underline flex items-center gap-2">
                 <IconDirectChat className="w-5 h-5 text-[var(--primary)]" />
-                <span>0832.555.500 (Zalo 24/7)</span>
+                <span>{settings.hotlineDisplay} (Zalo 24/7)</span>
               </a>
             </div>
           </div>
 
           {/* Right: Interactive Form */}
           <div className="lg:col-span-3">
-            <form onSubmit={handleSubmitConsultation} className="space-y-3.5 sm:space-y-4">
+            {formError && (
+              <div className="mb-4 p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs font-semibold text-red-600">
+                {formError}
+              </div>
+            )}
+            <form onSubmit={handleSubmitConsultation} className="space-y-3.5 sm:space-y-4" noValidate>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-semibold text-[var(--text)]">
