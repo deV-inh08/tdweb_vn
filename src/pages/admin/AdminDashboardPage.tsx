@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -21,8 +21,12 @@ import {
   X,
   Menu,
   Sparkles,
+  ChevronLeft,
+  ChevronRight,
+  Send,
 } from 'lucide-react';
 import { WebcraftLogoIcon } from '../../components/CustomIcons';
+import { sendOrderNotificationEmail } from '../../lib/emailNotification';
 import { CATEGORY_LABELS, useAppStore } from '../../store/useAppStore';
 import type {
   LeadItem,
@@ -33,6 +37,8 @@ import type {
 } from '../../types';
 
 type AdminTab = 'overview' | 'leads' | 'templates' | 'pricing';
+
+const ADMIN_TPL_PER_PAGE = 6;
 
 const STATUS_META: Record<
   LeadStatus,
@@ -71,6 +77,8 @@ export default function AdminDashboardPage() {
     pricingPlans,
     leads,
     settings,
+    notifyEmail,
+    updateNotifyEmail,
     isAuthenticated,
     logout,
     addTemplate,
@@ -95,6 +103,13 @@ export default function AdminDashboardPage() {
   const [bannerNotice, setBannerNotice] = useState<string | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
 
+  // Email notification input state
+  const [emailInput, setEmailInput] = useState(notifyEmail);
+
+  useEffect(() => {
+    setEmailInput(notifyEmail);
+  }, [notifyEmail]);
+
   // Leads state
   const [leadSearch, setLeadSearch] = useState('');
   const [leadStatusFilter, setLeadStatusFilter] = useState<string>('all');
@@ -112,9 +127,10 @@ export default function AdminDashboardPage() {
     adminNotes: '',
   });
 
-  // Templates state
+  // Templates state & pagination
   const [tplSearch, setTplSearch] = useState('');
   const [tplCatFilter, setTplCatFilter] = useState<string>('all');
+  const [tplCurrentPage, setTplCurrentPage] = useState<number>(1);
   const [editingTemplate, setEditingTemplate] = useState<TemplateItem | null>(null);
   const [isTplModalOpen, setIsTplModalOpen] = useState(false);
   const [tplForm, setTplForm] = useState({
@@ -144,6 +160,39 @@ export default function AdminDashboardPage() {
     badgeText: 'PHỔ BIẾN NHẤT',
     ctaLabel: 'Đăng Ký Tư Vấn Gói Này',
   });
+
+  // Filtered Templates
+  const filteredTemplates = templates.filter((t) => {
+    const catMatch = tplCatFilter === 'all' || t.category === tplCatFilter;
+    const q = tplSearch.trim().toLowerCase();
+    const searchMatch =
+      !q ||
+      t.title.toLowerCase().includes(q) ||
+      t.desc.toLowerCase().includes(q) ||
+      t.categoryName.toLowerCase().includes(q);
+    return catMatch && searchMatch;
+  });
+
+  const tplTotalPages = Math.max(
+    1,
+    Math.ceil(filteredTemplates.length / ADMIN_TPL_PER_PAGE)
+  );
+
+  useEffect(() => {
+    setTplCurrentPage(1);
+  }, [tplSearch, tplCatFilter]);
+
+  useEffect(() => {
+    if (tplCurrentPage > tplTotalPages) {
+      setTplCurrentPage(tplTotalPages);
+    }
+  }, [tplCurrentPage, tplTotalPages]);
+
+  const tplStartIndex = (tplCurrentPage - 1) * ADMIN_TPL_PER_PAGE;
+  const paginatedAdminTemplates = filteredTemplates.slice(
+    tplStartIndex,
+    tplStartIndex + ADMIN_TPL_PER_PAGE
+  );
 
   if (!isAuthenticated) {
     return <Navigate to="/admin/login" replace />;
@@ -175,17 +224,16 @@ export default function AdminDashboardPage() {
     return statusMatch && searchMatch;
   });
 
-  // Filtered Templates
-  const filteredTemplates = templates.filter((t) => {
-    const catMatch = tplCatFilter === 'all' || t.category === tplCatFilter;
-    const q = tplSearch.trim().toLowerCase();
-    const searchMatch =
-      !q ||
-      t.title.toLowerCase().includes(q) ||
-      t.desc.toLowerCase().includes(q) ||
-      t.categoryName.toLowerCase().includes(q);
-    return catMatch && searchMatch;
-  });
+  // Handlers: Save Notification Email
+  const handleSaveNotifyEmail = (e: React.FormEvent) => {
+    e.preventDefault();
+    const res = updateNotifyEmail(emailInput);
+    if (!res.ok) {
+      notify(res.error || 'Địa chỉ Email không hợp lệ!');
+      return;
+    }
+    notify(`Đã cập nhật Email nhận thông báo đơn hàng: ${emailInput.trim()}`);
+  };
 
   // Handlers: Template Modal
   const openCreateTemplate = () => {
@@ -392,7 +440,7 @@ export default function AdminDashboardPage() {
       status: 'new',
       adminNotes: '',
     });
-    notify('Đã thêm khách hàng mới vào danh sách!');
+    notify(`Đã thêm khách hàng và gửi thông báo tới ${notifyEmail}!`);
   };
 
   const navItems: { id: AdminTab; label: string; icon: React.ReactNode; badge?: number }[] = [
@@ -695,7 +743,7 @@ export default function AdminDashboardPage() {
                       Xử Lý Yêu Cầu Tư Vấn ({newLeadsCount} mới)
                     </div>
                     <div className="text-xs text-slate-500">
-                      Xem SĐT, nhu cầu và cập nhật trạng thái
+                      Thông báo về: {notifyEmail}
                     </div>
                   </div>
                 </button>
@@ -727,10 +775,10 @@ export default function AdminDashboardPage() {
                 <div className="p-5 border-b border-slate-100 flex items-center justify-between">
                   <div>
                     <h2 className="font-['Inter_Tight'] text-base font-bold text-slate-900">
-                      Khách Hàng Đăng Ký Tư Vấn Gần Đây
+                      Khách Hàng Đặt Hàng & Đăng Ký Tư Vấn Gần Đây
                     </h2>
                     <p className="text-xs text-slate-500">
-                      Danh sách yêu cầu tư vấn gửi từ biểu mẫu trang chủ
+                      Tự động gửi thông báo đơn mới về email: <strong>{notifyEmail}</strong>
                     </p>
                   </div>
                   <button
@@ -802,10 +850,47 @@ export default function AdminDashboardPage() {
           )}
 
           {/* ===============================================================
-              TAB 2: LEADS CRM
+              TAB 2: LEADS CRM + CUSTOM NOTIFICATION EMAIL
               =============================================================== */}
           {activeTab === 'leads' && (
             <div className="space-y-5">
+              {/* Custom Notification Email Bar */}
+              <form
+                onSubmit={handleSaveNotifyEmail}
+                className="bg-white p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-emerald-50 text-[#08482D] flex items-center justify-center shrink-0">
+                    <Mail className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-900">
+                      Email Nhận Thông Báo Khi Khách Đặt Hàng / Tư Vấn
+                    </div>
+                    <div className="text-[11px] text-slate-500">
+                      Mỗi khi khách điền form ngoài trang chủ, hệ thống sẽ tự động gửi chi tiết đơn về địa chỉ email này (Lần đầu tiên hãy bấm Activate trong hộp thư).
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <input
+                    type="email"
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    placeholder="vintd2004@gmail.com"
+                    className="h-10 px-3.5 w-full sm:w-60 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:bg-white"
+                  />
+                  <button
+                    type="submit"
+                    style={{ backgroundColor: '#08482D', color: '#FFFFFF' }}
+                    className="h-10 px-4 rounded-xl bg-[#08482D] hover:bg-[#063621] text-white text-xs font-semibold whitespace-nowrap cursor-pointer"
+                  >
+                    Đổi Email
+                  </button>
+                </div>
+              </form>
+
               {/* Filter & Actions Bar */}
               <div className="bg-white p-4 rounded-2xl border border-slate-200 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
                 <div className="flex flex-1 flex-col sm:flex-row gap-2.5">
@@ -952,6 +1037,22 @@ export default function AdminDashboardPage() {
                               <div className="inline-flex items-center gap-1.5">
                                 <button
                                   type="button"
+                                  onClick={async () => {
+                                    notify(`Đang gửi thông báo đơn ${lead.id} tới ${notifyEmail}...`);
+                                    const res = await sendOrderNotificationEmail(lead, notifyEmail);
+                                    if (res.ok) {
+                                      notify(`Đã gửi thông báo đơn ${lead.id} tới ${notifyEmail}!`);
+                                    } else {
+                                      notify(`Không thể gửi email: ${res.error}`);
+                                    }
+                                  }}
+                                  className="p-2 rounded-lg bg-emerald-50 hover:bg-[#08482D] hover:text-white text-[#08482D] transition-colors cursor-pointer"
+                                  title={`Gửi thông báo đơn này tới ${notifyEmail}`}
+                                >
+                                  <Send className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  type="button"
                                   onClick={() => setSelectedLead(lead)}
                                   className="p-2 rounded-lg bg-slate-100 hover:bg-[#08482D] hover:text-white text-slate-700 transition-colors cursor-pointer"
                                   title="Ghi chú & Chi tiết"
@@ -988,7 +1089,7 @@ export default function AdminDashboardPage() {
           )}
 
           {/* ===============================================================
-              TAB 3: TEMPLATES CRUD
+              TAB 3: TEMPLATES CRUD + PAGINATION
               =============================================================== */}
           {activeTab === 'templates' && (
             <div className="space-y-5">
@@ -1051,7 +1152,7 @@ export default function AdminDashboardPage() {
 
               {/* Templates Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {filteredTemplates.map((item) => {
+                {paginatedAdminTemplates.map((item) => {
                   const visible = item.isVisible !== false;
                   return (
                     <div
@@ -1157,6 +1258,71 @@ export default function AdminDashboardPage() {
                   );
                 })}
               </div>
+
+              {/* Admin Templates Pagination Bar */}
+              {filteredTemplates.length > 0 && (
+                <div className="bg-white px-5 py-3.5 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div className="text-xs text-slate-600 font-medium">
+                    Hiển thị <strong>{tplStartIndex + 1}</strong> –{' '}
+                    <strong>
+                      {Math.min(
+                        tplStartIndex + ADMIN_TPL_PER_PAGE,
+                        filteredTemplates.length
+                      )}
+                    </strong>{' '}
+                    trên tổng số <strong>{filteredTemplates.length}</strong> mẫu giao diện
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      disabled={tplCurrentPage === 1}
+                      onClick={() => setTplCurrentPage((p) => Math.max(1, p - 1))}
+                      className="h-9 px-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-800 disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1 cursor-pointer"
+                    >
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Trước</span>
+                    </button>
+
+                    {Array.from({ length: tplTotalPages }, (_, i) => i + 1).map(
+                      (page) => {
+                        const active = tplCurrentPage === page;
+                        return (
+                          <button
+                            key={page}
+                            type="button"
+                            onClick={() => setTplCurrentPage(page)}
+                            style={
+                              active
+                                ? { backgroundColor: '#08482D', color: '#FFFFFF' }
+                                : undefined
+                            }
+                            className={`w-9 h-9 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                              active
+                                ? 'bg-[#08482D] text-white shadow-xs'
+                                : 'bg-white border border-slate-200 text-slate-800 hover:bg-slate-100'
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        );
+                      }
+                    )}
+
+                    <button
+                      type="button"
+                      disabled={tplCurrentPage === tplTotalPages}
+                      onClick={() =>
+                        setTplCurrentPage((p) => Math.min(tplTotalPages, p + 1))
+                      }
+                      className="h-9 px-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-800 disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>Sau</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

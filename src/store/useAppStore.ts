@@ -3,8 +3,14 @@ import { create } from 'zustand';
 import { TEMPLATES } from '../data/templates';
 import { supabaseFetch } from '../lib/supabase';
 import {
+  getNotifyEmail,
+  sendOrderNotificationEmail,
+  setNotifyEmailStorage,
+} from '../lib/emailNotification';
+import {
   AdminLoginSchema,
   ConsultationLeadSchema,
+  NotifyEmailSchema,
   PricingPlanFormSchema,
   TemplateFormSchema,
 } from '../schemas';
@@ -239,9 +245,13 @@ export interface AppStoreState {
   pricingPlans: PricingPlan[];
   leads: LeadItem[];
   settings: SiteSettings;
+  notifyEmail: string;
   isAuthenticated: boolean;
   isSyncing: boolean;
   dbError: string | null;
+
+  // Email notification config with Zod validation
+  updateNotifyEmail: (email: string) => { ok: boolean; error?: string };
 
   // Auth with Zod validation
   login: (username: string, password: string) => { ok: boolean; error?: string };
@@ -300,6 +310,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
   pricingPlans: DEFAULT_PRICING_PLANS,
   leads: [],
   settings: DEFAULT_SETTINGS,
+  notifyEmail: getNotifyEmail(),
   isAuthenticated: (() => {
     try {
       return sessionStorage.getItem(AUTH_SESSION_KEY) === 'true';
@@ -309,6 +320,19 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
   })(),
   isSyncing: false,
   dbError: null,
+
+  updateNotifyEmail: (email) => {
+    const parsed = NotifyEmailSchema.safeParse(email);
+    if (!parsed.success) {
+      return {
+        ok: false,
+        error: parsed.error.issues[0]?.message || 'Địa chỉ Email không hợp lệ',
+      };
+    }
+    setNotifyEmailStorage(parsed.data);
+    set({ notifyEmail: parsed.data });
+    return { ok: true };
+  },
 
   // Auth with Zod validation
   login: (username, password) => {
@@ -408,7 +432,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
         return { ok: false, message: `Lỗi kết nối: ${tplRes.error}` };
       }
 
-      // 1. Templates: If fewer than 10 on first seed or empty, ensure templates are loaded
+      // 1. Templates
       if (tplRes.data && tplRes.data.length > 0) {
         set({
           templates: tplRes.data.map((r) =>
@@ -821,6 +845,9 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
     };
 
     set((state) => ({ leads: [newLead, ...state.leads] }));
+
+    // Tự động gửi thông báo đơn hàng / yêu cầu tư vấn tới email nhận thông báo (mặc định vintd2004@gmail.com)
+    void sendOrderNotificationEmail(newLead, get().notifyEmail);
 
     await supabaseFetch('leads', {
       method: 'POST',

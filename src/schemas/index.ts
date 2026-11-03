@@ -106,6 +106,11 @@ export const ConsultationLeadSchema = z.object({
   adminNotes: z.string().trim().optional(),
 });
 
+export const NotifyEmailSchema = z
+  .string()
+  .trim()
+  .email('Địa chỉ Email nhận thông báo không hợp lệ');
+
 export type AdminLoginInput = z.infer<typeof AdminLoginSchema>;
 export type TemplateFormInput = z.infer<typeof TemplateFormSchema>;
 export type PricingPlanFormInput = z.infer<typeof PricingPlanFormSchema>;

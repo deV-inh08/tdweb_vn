@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   IconSpeedSprint,
   IconMobileTouch,
@@ -15,12 +17,39 @@ interface Props {
   handleSelectTemplate: (name: string) => void;
 }
 
-/** SECTION 2: Kho mẫu + bộ lọc danh mục */
+const ITEMS_PER_PAGE = 6;
+
+/** SECTION 2: Kho mẫu + bộ lọc danh mục + Phân trang */
 export default function Showcase({ categoryFilter, setCategoryFilter, setActiveModalItem, handleSelectTemplate }: Props) {
   const { visibleTemplates } = useData();
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   const filteredTemplates = categoryFilter === 'all' 
     ? visibleTemplates 
     : visibleTemplates.filter((t) => t.category === categoryFilter);
+
+  const totalPages = Math.max(1, Math.ceil(filteredTemplates.length / ITEMS_PER_PAGE));
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [categoryFilter]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedTemplates = filteredTemplates.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    const elem = document.getElementById('showcase');
+    if (elem) {
+      elem.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <>
@@ -116,7 +145,7 @@ export default function Showcase({ categoryFilter, setCategoryFilter, setActiveM
 
         {/* Project Cards Grid with Staggered Scroll Reveal */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-          {filteredTemplates.map((item, idx) => (
+          {paginatedTemplates.map((item, idx) => (
             <div
               key={item.id}
               className={`scroll-reveal is-visible stagger-${(idx % 4) + 1} bg-white border border-[var(--border)] rounded-2xl overflow-hidden shadow-[var(--shadow)] hover:-translate-y-1.5 hover:shadow-[0_12px_32px_rgba(37,99,235,0.18)] hover:border-[var(--primary)]/35 transition-all flex flex-col`}
@@ -201,6 +230,54 @@ export default function Showcase({ categoryFilter, setCategoryFilter, setActiveM
             </div>
           ))}
         </div>
+
+        {/* Pagination Bar */}
+        {totalPages > 1 && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-[var(--border)]">
+            <div className="text-xs sm:text-sm text-[var(--text-muted)] font-medium">
+              Hiển thị <strong>{startIndex + 1}</strong> –{' '}
+              <strong>{Math.min(startIndex + ITEMS_PER_PAGE, filteredTemplates.length)}</strong> trên tổng số{' '}
+              <strong>{filteredTemplates.length}</strong> mẫu giao diện
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                disabled={currentPage === 1}
+                onClick={() => handlePageChange(currentPage - 1)}
+                className="h-9 px-3 rounded-xl border border-[var(--border)] bg-white text-xs font-semibold text-[var(--text)] hover:border-[var(--primary)] hover:text-[var(--primary)] disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1 cursor-pointer transition-all"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span>Trước</span>
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  type="button"
+                  onClick={() => handlePageChange(page)}
+                  className={`w-9 h-9 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    currentPage === page
+                      ? 'bg-[var(--primary)] text-white shadow-sm'
+                      : 'bg-white border border-[var(--border)] text-[var(--text)] hover:border-[var(--primary)] hover:text-[var(--primary)]'
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+
+              <button
+                type="button"
+                disabled={currentPage === totalPages}
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="h-9 px-3 rounded-xl border border-[var(--border)] bg-white text-xs font-semibold text-[var(--text)] hover:border-[var(--primary)] hover:text-[var(--primary)] disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1 cursor-pointer transition-all"
+              >
+                <span>Sau</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
       </section>
     </>
   );
