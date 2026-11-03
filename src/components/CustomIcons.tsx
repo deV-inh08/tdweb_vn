@@ -19,8 +19,8 @@ interface IconProps {
 // 1. Logo Thương Hiệu Webcraft: Mầm Cây Sáng Tạo & Khung Thiết Kế Số
 export const WebcraftLogoIcon: React.FC<IconProps> = ({
   className = "w-7 h-7",
-  color = "#08482D",
-  secondaryColor = "#DAE7C7"
+  color = "#2563EB",
+  secondaryColor = "#CCFBF1"
 }) => (
   <svg className={className} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Nền mầm lá cong hữu cơ */}
@@ -36,20 +36,20 @@ export const WebcraftLogoIcon: React.FC<IconProps> = ({
     {/* Gân lá vẽ tay studio uốn cong như ngòi bút vẽ */}
     <path
       d="M18 28V14M18 14C18 14 21 16.5 23.5 16M18 18.5C18 18.5 15 20.8 12.5 21.2"
-      stroke="#F5F8EF"
+      stroke="#F0F9FF"
       strokeWidth="2.2"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     {/* Giọt sương sáng tạo */}
-    <circle cx="23.5" cy="11.5" r="1.6" fill="#F5F8EF" />
+    <circle cx="23.5" cy="11.5" r="1.6" fill="#F0F9FF" />
   </svg>
 );
 
 // 2. Ưu Điểm: Tốc Độ Tải Dưới 1.2s (Đồng hồ cơ học & Làn gió động học vút bay)
 export const IconSpeedSprint: React.FC<IconProps> = ({
   className = "w-6 h-6",
-  color = "#08482D"
+  color = "#2563EB"
 }) => (
   <svg className={className} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Vòng tròn đồng hồ vẽ tay mở */}
@@ -77,7 +77,7 @@ export const IconSpeedSprint: React.FC<IconProps> = ({
 // 3. Ưu Điểm: Chuẩn SEO On-page Google (Kính lúp & Biểu đồ cột vươn đỉnh)
 export const IconSeoGrowth: React.FC<IconProps> = ({
   className = "w-6 h-6",
-  color = "#08482D"
+  color = "#2563EB"
 }) => (
   <svg className={className} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Vành kính lúp hữu cơ */}
@@ -102,7 +102,7 @@ export const IconSeoGrowth: React.FC<IconProps> = ({
 // 4. Ưu Điểm: Mobile First Tối Ưu Chốt Đơn (Điện thoại uốn cong & Sóng chạm cảm ứng)
 export const IconMobileTouch: React.FC<IconProps> = ({
   className = "w-6 h-6",
-  color = "#08482D"
+  color = "#2563EB"
 }) => (
   <svg className={className} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Thân điện thoại bo tròn viền tay */}
@@ -139,7 +139,7 @@ export const IconMobileTouch: React.FC<IconProps> = ({
 // 5. Ưu Điểm: Bảo Hành Kỹ Thuật Trọn Đời (Khiên bảo vệ hữu cơ & Ổ khóa an tâm)
 export const IconShieldWarranty: React.FC<IconProps> = ({
   className = "w-6 h-6",
-  color = "#08482D"
+  color = "#2563EB"
 }) => (
   <svg className={className} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Tấm khiên vẽ tay studio vững chãi */}
@@ -166,7 +166,7 @@ export const IconShieldWarranty: React.FC<IconProps> = ({
 // 6. Quy Trình 01: Khảo Sát & Tư Vấn (Cuốn sổ phác thảo ý tưởng & Kính ngắm)
 export const IconStepSurvey: React.FC<IconProps> = ({
   className = "w-8 h-8",
-  color = "#08482D"
+  color = "#2563EB"
 }) => (
   <svg className={className} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Cuốn sổ tay mở trang */}
@@ -177,7 +177,7 @@ export const IconStepSurvey: React.FC<IconProps> = ({
     <line x1="14" y1="16.5" x2="21" y2="16.5" stroke={color} strokeWidth="2" strokeLinecap="round" />
     <line x1="14" y1="21" x2="18" y2="21" stroke={color} strokeWidth="2" strokeLinecap="round" />
     {/* Kính lúp nghiên cứu đối thủ đè góc */}
-    <circle cx="24" cy="22" r="5" fill="#F5F8EF" stroke={color} strokeWidth="2.2" />
+    <circle cx="24" cy="22" r="5" fill="#F0F9FF" stroke={color} strokeWidth="2.2" />
     <path d="M28 26L32 30" stroke={color} strokeWidth="2.6" strokeLinecap="round" />
   </svg>
 );
@@ -185,7 +185,7 @@ export const IconStepSurvey: React.FC<IconProps> = ({
 // 7. Quy Trình 02: Thiết Kế Bản Vẽ & Duyệt Mẫu (Bảng màu họa sĩ & Cây cọ tạo hình)
 export const IconStepPrototype: React.FC<IconProps> = ({
   className = "w-8 h-8",
-  color = "#08482D"
+  color = "#2563EB"
 }) => (
   <svg className={className} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Bảng pha màu nghệ thuật của nhà thiết kế */}
@@ -209,7 +209,7 @@ export const IconStepPrototype: React.FC<IconProps> = ({
 // 8. Quy Trình 03: Lập Trình & Tối Ưu Tốc Độ (Ngoặc mã nguồn ôm lấy chồi non)
 export const IconStepCoding: React.FC<IconProps> = ({
   className = "w-8 h-8",
-  color = "#08482D"
+  color = "#2563EB"
 }) => (
   <svg className={className} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Cặp ngoặc nhọn code { } vẽ tay */}
@@ -242,7 +242,7 @@ export const IconStepCoding: React.FC<IconProps> = ({
 // 9. Quy Trình 04: Bàn Giao & Hướng Dẫn 1-1 (Hộp quà thành phẩm tỏa sáng & Tên lửa cất cánh)
 export const IconStepLaunch: React.FC<IconProps> = ({
   className = "w-8 h-8",
-  color = "#08482D"
+  color = "#2563EB"
 }) => (
   <svg className={className} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Chiếc hộp bàn giao thành phẩm */}
@@ -268,7 +268,7 @@ export const IconStepLaunch: React.FC<IconProps> = ({
 // 10. Cam Kết Form 1: Không Ràng Buộc Chi Phí (Thẻ giá mở & Nụ cười thân thiện)
 export const IconFreePledge: React.FC<IconProps> = ({
   className = "w-7 h-7",
-  color = "#08482D"
+  color = "#2563EB"
 }) => (
   <svg className={className} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Thẻ giá vẽ tay */}
@@ -290,7 +290,7 @@ export const IconFreePledge: React.FC<IconProps> = ({
 // 11. Cam Kết Form 2: Bảo Mật Ý Tưởng 100% (Con dấu sáp niêm phong tài liệu độc quyền)
 export const IconNdaLock: React.FC<IconProps> = ({
   className = "w-7 h-7",
-  color = "#08482D"
+  color = "#2563EB"
 }) => (
   <svg className={className} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Cuộn tài liệu bí mật */}
@@ -298,7 +298,7 @@ export const IconNdaLock: React.FC<IconProps> = ({
     <line x1="10" y1="10" x2="22" y2="10" stroke={color} strokeWidth="2" strokeLinecap="round" />
     <line x1="10" y1="14" x2="18" y2="14" stroke={color} strokeWidth="2" strokeLinecap="round" />
     {/* Con dấu sáp hoàng gia có ruy băng */}
-    <circle cx="21" cy="22" r="5" fill="#F5F8EF" stroke={color} strokeWidth="2.2" />
+    <circle cx="21" cy="22" r="5" fill="#F0F9FF" stroke={color} strokeWidth="2.2" />
     <path d="M19 25L17.5 29L20 28L22 30L21.5 25" fill={color} />
     {/* Chữ V tượng trưng cho Verified */}
     <path d="M19.5 21.5L21 23L23 20" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -308,7 +308,7 @@ export const IconNdaLock: React.FC<IconProps> = ({
 // 12. Cam Kết Form 3: Tư Vấn Trực Tiếp Zalo / Hotline (Hội thoại thân thiện & Sóng kết nối)
 export const IconDirectChat: React.FC<IconProps> = ({
   className = "w-7 h-7",
-  color = "#08482D"
+  color = "#2563EB"
 }) => (
   <svg className={className} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Bong bóng thoại lớn */}
@@ -348,7 +348,7 @@ export const IconSendPaperPlane: React.FC<IconProps> = ({
 // 14. Kính Xem Trước Mẫu Website (Inspect Lens)
 export const IconInspectEye: React.FC<IconProps> = ({
   className = "w-4 h-4",
-  color = "#08482D"
+  color = "#2563EB"
 }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -366,7 +366,7 @@ export const IconInspectEye: React.FC<IconProps> = ({
 // 15. Dấu Tích Xác Nhận Chuẩn Studio (Studio Hand-drawn Checkmark)
 export const IconStudioCheck: React.FC<IconProps> = ({
   className = "w-4 h-4",
-  color = "#08482D"
+  color = "#2563EB"
 }) => (
   <svg className={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path

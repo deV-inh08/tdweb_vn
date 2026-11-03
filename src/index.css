@@ -2,18 +2,32 @@
 @import "tailwindcss";
 
 :root {
+  --primary: #2563EB;
+  --primary-dark: #1D4ED8;
+  --secondary: #14B8A6;
+  --secondary-dark: #0F766E;
+  --accent: #FB923C;
+  --bg: #FFFFFF;
+  --bg-soft: #F0F9FF;
+  --teal-soft: #CCFBF1;
+  --text: #0F172A;
+  --text-muted: #475569;
+  --border: #E2E8F0;
+  --gradient: linear-gradient(135deg, #2563EB, #14B8A6);
+  --shadow: 0 8px 24px rgba(37, 99, 235, .12);
+
   --u: min(100vw / 1440, 100vh / 1080);
-  --bg-page: #F5F8EF;
+  --bg-page: var(--bg);
   --bg-surface: #FFFFFF;
-  --forest: #08482D;
-  --forest-hover: #0b5938;
-  --forest-light: rgba(8, 72, 45, 0.08);
-  --mint-badge: #DAE7C7;
-  --mint-border: #C8DCB0;
-  --ink-headline: #101410;
-  --ink-subline: #5E5E61;
-  --ink-muted: #7E7E82;
-  --border-subtle: rgba(8, 72, 45, 0.12);
+  --forest: var(--primary);
+  --forest-hover: var(--primary-dark);
+  --forest-light: rgba(37, 99, 235, 0.08);
+  --mint-badge: var(--teal-soft);
+  --mint-border: var(--border);
+  --ink-headline: var(--text);
+  --ink-subline: var(--text-muted);
+  --ink-muted: var(--text-muted);
+  --border-subtle: rgba(37, 99, 235, 0.12);
 }
 
 html {
@@ -163,7 +177,7 @@ body {
   will-change: transform, clip-path, left, top, width, height;
   cursor: pointer;
   transition: filter 0.2s ease;
-  box-shadow: 0 8px 24px rgba(8, 72, 45, 0.08);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08);
 }
 
 .video-card:hover {
@@ -177,14 +191,14 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #141c17;
+  background: #0F172A;
   display: flex;
   flex-direction: column;
 }
 
 .card-browser-header {
   height: 24px;
-  background: rgba(16, 22, 18, 0.95);
+  background: rgba(15, 23, 42, 0.95);
   display: flex;
   align-items: center;
   padding: 0 10px;
@@ -230,7 +244,7 @@ body {
   position: relative;
   height: 14rem;
   overflow: hidden;
-  background: #101612;
+  background: #0F172A;
 }
 
 .parallax-card-img {
@@ -253,7 +267,7 @@ body {
 .parallax-card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(10, 16, 12, 0.94) 0%, rgba(10, 16, 12, 0.42) 55%, rgba(0, 0, 0, 0.15) 100%);
+  background: linear-gradient(to top, rgba(15, 23, 42, .85) 0%, transparent 100%);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -264,7 +278,7 @@ body {
 .card-info-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(8, 72, 45, 0.92) 0%, rgba(8, 72, 45, 0.35) 45%, rgba(0, 0, 0, 0.1) 100%);
+  background: linear-gradient(to top, rgba(15, 23, 42, .85) 0%, transparent 100%);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -412,7 +426,7 @@ button {
   position: fixed;
   inset: 0;
   z-index: 999;
-  background: rgba(6, 22, 14, 0.78);
+  background: rgba(15, 23, 42, 0.78);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   display: flex;
@@ -439,9 +453,9 @@ button {
   background: #FFFFFF;
   border-radius: 28px;
   padding: 2.25rem;
-  border: 1px solid rgba(8, 72, 45, 0.18);
-  box-shadow: 0 35px 80px -15px rgba(6, 40, 24, 0.45),
-              0 0 0 1px rgba(218, 231, 199, 0.3);
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  box-shadow: 0 35px 80px -15px rgba(15, 23, 42, 0.45),
+              0 0 0 1px rgba(204, 251, 241, 0.3);
   transform-origin: 50% 100%;
   transform: perspective(1400px) rotateX(18deg) rotateY(-8deg) scale(0.86) translateZ(-80px);
   opacity: 0;
@@ -480,9 +494,9 @@ button {
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 9999px;
-  background: rgba(8, 72, 45, 0.08);
-  color: #08482D;
-  border: 1px solid rgba(8, 72, 45, 0.12);
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--primary);
+  border: 1px solid rgba(37, 99, 235, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -494,7 +508,7 @@ button {
 }
 
 .modal-close-btn:hover {
-  background: #08482D;
+  background: var(--primary);
   color: #FFFFFF;
   transform: rotate(90deg) scale(1.08);
 }
@@ -527,14 +541,14 @@ button {
 .device-preview-frame {
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(8, 72, 45, 0.15);
-  box-shadow: 0 10px 30px rgba(8, 72, 45, 0.08);
-  background: #F5F8EF;
+  border: 1px solid rgba(37, 99, 235, 0.15);
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.08);
+  background: var(--bg-soft);
 }
 
 .device-header {
   height: 28px;
-  background: #101612;
+  background: #0F172A;
   display: flex;
   align-items: center;
   padding: 0 12px;
@@ -555,7 +569,7 @@ button {
   position: absolute;
   inset: -4px;
   border-radius: 9999px;
-  border: 1.5px solid rgba(8, 72, 45, 0.25);
+  border: 1.5px solid rgba(37, 99, 235, 0.25);
   pointer-events: none;
   animation: pulseRing 2.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
@@ -579,14 +593,14 @@ button {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: calc(16 * var(--u));
-  box-shadow: 0 12px 28px -6px rgba(8, 72, 45, 0.45);
+  box-shadow: 0 12px 28px -6px rgba(37, 99, 235, 0.45);
   transition: all 0.25s ease;
 }
 
 .main-cta-button:hover {
   background: var(--forest-hover);
   transform: translateY(-2px);
-  box-shadow: 0 16px 32px -6px rgba(8, 72, 45, 0.55);
+  box-shadow: 0 16px 32px -6px rgba(37, 99, 235, 0.55);
 }
 
 @media (max-width: 1024px) {
@@ -615,11 +629,11 @@ button {
   gap: 0.875rem;
   max-width: 400px;
   padding: 1rem 1.25rem;
-  background: #08482D;
+  background: var(--primary);
   color: #FFFFFF;
   border-radius: 16px;
-  box-shadow: 0 20px 40px -10px rgba(6, 40, 24, 0.5);
-  border: 1px solid rgba(218, 231, 199, 0.25);
+  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(204, 251, 241, 0.25);
   opacity: 0;
   transform: translateY(20px) scale(0.95);
   pointer-events: none;
@@ -666,8 +680,8 @@ button {
   overflow: hidden;
   scroll-snap-align: center;
   text-align: left;
-  background: #0d2a1c;
-  box-shadow: 0 18px 36px -14px rgba(8, 72, 45, 0.45);
+  background: #0F172A;
+  box-shadow: 0 18px 36px -14px rgba(37, 99, 235, 0.45);
   transform: scale(0.9);
   opacity: 0.6;
   transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
@@ -694,7 +708,7 @@ button {
 .mcc-shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(6, 40, 24, 0.95) 0%, rgba(6, 40, 24, 0.35) 50%, rgba(0, 0, 0, 0.05) 100%);
+  background: linear-gradient(to top, rgba(15, 23, 42, .85) 0%, transparent 100%);
 }
 
 .mcc-top {
@@ -714,8 +728,8 @@ button {
   letter-spacing: 0.05em;
   padding: 4px 10px;
   border-radius: 9999px;
-  background: #DAE7C7;
-  color: #08482D;
+  background: var(--teal-soft);
+  color: var(--primary);
 }
 
 .mcc-open {
@@ -724,7 +738,7 @@ button {
   border-radius: 9999px;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(8px);
-  color: #08482D;
+  color: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -781,4 +795,99 @@ button {
     padding-left: calc(50vw - 150px);
     padding-right: calc(50vw - 150px);
   }
+}
+
+/* ==========================================================================
+   MOBILE 3D STACK CARDS (auto-play)
+   ========================================================================== */
+.stk-deck {
+  position: relative;
+  width: min(64vw, 290px);
+  aspect-ratio: 4 / 5;
+  perspective: 1100px;
+  transform-style: preserve-3d;
+  margin: 0 auto;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.stk-card {
+  position: absolute !important;
+  inset: 0;
+  max-width: none;
+  transform-origin: 50% 50%;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
+  will-change: transform, opacity;
+}
+
+.stk-progress {
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  border-radius: 9999px;
+  transform-origin: left center;
+  animation: stkProgress 3.2s linear forwards;
+}
+
+@keyframes stkProgress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stk-card { transition: none; }
+}
+
+
+/* ==========================================================================
+   BLUE + TEAL THEME HELPERS
+   ========================================================================== */
+.text-gradient {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Nền xanh nhạt tràn full chiều ngang cho section nằm trong container */
+.section-soft-bg {
+  background: var(--bg-soft);
+  box-shadow: 0 0 0 100vmax var(--bg-soft);
+  clip-path: inset(0 -100vmax);
+}
+
+/* Hero: gradient rất nhạt từ bg-soft xuống trắng */
+.hero-viewport-container {
+  background: linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 100%);
+}
+
+/* CTA nổi bật "Nhận Tư Vấn" (10% accent) */
+.main-cta-button {
+  background: var(--accent);
+  box-shadow: 0 12px 28px -8px rgba(251, 146, 60, 0.5);
+  transition: all 0.2s ease;
+}
+.main-cta-button:hover {
+  background: #F97316;
+  box-shadow: 0 16px 32px -8px rgba(251, 146, 60, 0.6);
+}
+.button-ring {
+  border-color: rgba(251, 146, 60, 0.4);
+}
+
+/* Transition 0.2s cho nút & thẻ */
+button,
+a,
+.video-card,
+.mcc-card .mcc-cta {
+  transition-duration: 0.2s;
+}
+
+/* Focus ring form */
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important;
 }
