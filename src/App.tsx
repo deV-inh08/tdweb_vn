@@ -1,4 +1,4 @@
-<<<<<<< Updated upstream
+
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -91,14 +91,3 @@ export default function App() {
     </div>
   );
 }
-=======
-import { RouterProvider } from 'react-router-dom';
-import { router } from './router';
-import './App.css';
-
-export function App() {
-  return <RouterProvider router={router} />;
-}
-
-export default App;
->>>>>>> Stashed changes
