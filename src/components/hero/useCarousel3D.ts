@@ -62,9 +62,11 @@ export function useCarousel3D(
       const overlay = document.createElement('div');
       overlay.className = 'card-info-overlay';
       overlay.innerHTML = `
-        <span class="card-tag">${tData.categoryName}</span>
-        <div class="card-title-text">${tData.title}</div>
-        <div class="card-desc-text">${tData.desc}</div>
+        <div class="card-info-fixed">
+          <span class="card-tag">${tData.categoryName}</span>
+          <div class="card-title-text">${tData.title}</div>
+          <div class="card-desc-text">${tData.desc}</div>
+        </div>
       `;
       bodyWrap.appendChild(overlay);
 
@@ -255,10 +257,11 @@ export function useCarousel3D(
         const widthPx = W_base * u;
         const heightPx = cardHeight * u;
 
-        cardObj.el.style.left = `${leftPx.toFixed(1)}px`;
-        cardObj.el.style.top = `${topPx.toFixed(1)}px`;
-        cardObj.el.style.width = `${widthPx.toFixed(1)}px`;
-        cardObj.el.style.height = `${heightPx.toFixed(1)}px`;
+        cardObj.el.style.left = "0px";
+        cardObj.el.style.top = "0px";
+        cardObj.el.style.transform = `translate3d(${leftPx.toFixed(2)}px, ${topPx.toFixed(2)}px, 0)`;
+        cardObj.el.style.width = `${widthPx.toFixed(2)}px`;
+        cardObj.el.style.height = `${heightPx.toFixed(2)}px`;
 
         const yTL_px = (topL - cardTop) * u;
         const yBL_px = (botL - cardTop) * u;
