@@ -52,11 +52,11 @@ export default function AdminLoginPage() {
               <WebcraftLogoIcon className="w-7 h-7 text-[#08482D]" />
             </div>
             <div>
-              <div className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-[#08482D] bg-[#DAE7C7]/60 px-2.5 py-0.5 rounded-full mb-1">
+              <div className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-[#08482D] bg-[#DAE7C7]/60 px-2.5 py-0.5 rounded-full mb-1">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>Admin CMS Portal</span>
               </div>
-              <h1 className="font-['Inter_Tight'] text-xl sm:text-2xl font-extrabold text-slate-900">
+              <h1 className="font-['Inter_Tight'] text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
                 Đăng Nhập Quản Trị
               </h1>
             </div>

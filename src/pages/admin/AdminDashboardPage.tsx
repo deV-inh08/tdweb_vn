@@ -581,7 +581,7 @@ export default function AdminDashboardPage() {
               <Menu className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="font-['Inter_Tight'] text-base sm:text-lg font-bold text-slate-900">
+              <h1 className="font-['Inter_Tight'] text-base sm:text-lg font-bold tracking-tight text-slate-900">
                 {navItems.find((n) => n.id === activeTab)?.label}
               </h1>
               <p className="text-[11px] text-slate-500 hidden sm:block">
@@ -640,7 +640,7 @@ export default function AdminDashboardPage() {
                       <Users className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="font-['Inter_Tight'] text-2xl font-extrabold text-slate-900">
+                  <div className="font-['Inter_Tight'] text-2xl font-bold tracking-tight text-slate-900">
                     {leads.length}
                   </div>
                   <div className="text-xs text-blue-600 font-semibold mt-1">
@@ -657,7 +657,7 @@ export default function AdminDashboardPage() {
                       <Layers className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="font-['Inter_Tight'] text-2xl font-extrabold text-slate-900">
+                  <div className="font-['Inter_Tight'] text-2xl font-bold tracking-tight text-slate-900">
                     {visibleTemplates.length}{' '}
                     <span className="text-xs font-normal text-slate-400">
                       / {templates.length} mẫu
@@ -677,7 +677,7 @@ export default function AdminDashboardPage() {
                       <Sparkles className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="font-['Inter_Tight'] text-2xl font-extrabold text-slate-900">
+                  <div className="font-['Inter_Tight'] text-2xl font-bold tracking-tight text-slate-900">
                     {wonLeadsCount}
                   </div>
                   <div className="text-xs text-slate-500 mt-1">
@@ -698,7 +698,7 @@ export default function AdminDashboardPage() {
                       <CreditCard className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="font-['Inter_Tight'] text-2xl font-extrabold text-slate-900">
+                  <div className="font-['Inter_Tight'] text-2xl font-bold tracking-tight text-slate-900">
                     {pricingPlans.length} gói
                   </div>
                   <div className="text-xs text-purple-600 font-semibold mt-1">
@@ -774,7 +774,7 @@ export default function AdminDashboardPage() {
               <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
                 <div className="p-5 border-b border-slate-100 flex items-center justify-between">
                   <div>
-                    <h2 className="font-['Inter_Tight'] text-base font-bold text-slate-900">
+                    <h2 className="font-['Inter_Tight'] text-base font-bold tracking-tight text-slate-900">
                       Khách Hàng Đặt Hàng & Đăng Ký Tư Vấn Gần Đây
                     </h2>
                     <p className="text-xs text-slate-500">
@@ -806,7 +806,7 @@ export default function AdminDashboardPage() {
                         const st = STATUS_META[lead.status || 'new'];
                         return (
                           <tr key={lead.id} className="hover:bg-slate-50/80">
-                            <td className="py-3.5 px-4 font-mono font-bold text-slate-700">
+                            <td className="py-3.5 px-4 font-semibold tracking-tight text-slate-700">
                               {lead.id}
                             </td>
                             <td className="py-3.5 px-4">
@@ -967,7 +967,7 @@ export default function AdminDashboardPage() {
                         filteredLeads.map((lead) => (
                           <tr key={lead.id} className="hover:bg-slate-50/70 align-top">
                             <td className="py-4 px-4 whitespace-nowrap">
-                              <div className="font-mono font-bold text-slate-800">
+                              <div className="font-semibold tracking-tight text-slate-800">
                                 {lead.id}
                               </div>
                               <div className="text-[11px] text-slate-400 mt-0.5">
@@ -1185,10 +1185,10 @@ export default function AdminDashboardPage() {
                           </span>
                         </div>
                         <div className="absolute bottom-3 left-3 right-3 text-white">
-                          <div className="font-['Inter_Tight'] font-bold text-base">
+                          <div className="font-['Inter_Tight'] font-bold text-base tracking-tight">
                             {item.title}
                           </div>
-                          <div className="text-[11px] text-slate-300 font-mono truncate">
+                          <div className="text-[11px] text-slate-300 font-medium truncate">
                             {item.url}
                           </div>
                         </div>
@@ -1333,7 +1333,7 @@ export default function AdminDashboardPage() {
             <div className="space-y-5">
               <div className="bg-white p-4 rounded-2xl border border-slate-200 flex flex-wrap gap-3 items-center justify-between">
                 <div>
-                  <h2 className="font-['Inter_Tight'] text-sm font-bold text-slate-900">
+                  <h2 className="font-['Inter_Tight'] text-sm font-bold tracking-tight text-slate-900">
                     Quản Lý Các Gói Báo Giá Dịch Vụ ({pricingPlans.length} gói)
                   </h2>
                   <p className="text-xs text-slate-500">
@@ -1381,11 +1381,11 @@ export default function AdminDashboardPage() {
                         {plan.badgeText || 'PHỔ BIẾN NHẤT'}
                       </span>
                     )}
-                    <h3 className="font-['Inter_Tight'] text-lg font-bold text-slate-900">
+                    <h3 className="font-['Inter_Tight'] text-lg font-bold tracking-tight text-slate-900">
                       {plan.title}
                     </h3>
                     <p className="text-xs text-slate-500 mt-1 mb-4">{plan.description}</p>
-                    <div className="text-2xl font-extrabold text-[#08482D] font-['Inter_Tight'] mb-4">
+                    <div className="text-2xl font-bold tracking-tight text-[#08482D] font-['Inter_Tight'] mb-4">
                       {plan.price}{' '}
                       <span className="text-xs font-normal text-slate-500">{plan.unit}</span>
                     </div>
@@ -1436,7 +1436,7 @@ export default function AdminDashboardPage() {
         <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 my-8">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="font-['Inter_Tight'] text-lg font-bold text-slate-900">
+              <h3 className="font-['Inter_Tight'] text-lg font-bold tracking-tight text-slate-900">
                 {editingTemplate
                   ? `Chỉnh Sửa Mẫu: ${editingTemplate.title}`
                   : 'Thêm Mẫu Website Mới'}
@@ -1541,7 +1541,7 @@ export default function AdminDashboardPage() {
                       onChange={(e) =>
                         setTplForm({ ...tplForm, primaryColor: e.target.value })
                       }
-                      className="w-full h-10 px-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono"
+                      className="w-full h-10 px-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium"
                     />
                   </div>
                 </div>
@@ -1556,7 +1556,7 @@ export default function AdminDashboardPage() {
                   value={tplForm.url}
                   onChange={(e) => setTplForm({ ...tplForm, url: e.target.value })}
                   placeholder="https://tenmau.webcraft.vn"
-                  className="w-full h-10 px-3.5 bg-slate-50 border border-slate-200 rounded-xl font-mono"
+                  className="w-full h-10 px-3.5 bg-slate-50 border border-slate-200 rounded-xl font-medium"
                 />
               </div>
 
@@ -1571,7 +1571,7 @@ export default function AdminDashboardPage() {
                     setTplForm({ ...tplForm, thumbnailImage: e.target.value })
                   }
                   placeholder="https://images.unsplash.com/..."
-                  className="w-full h-10 px-3.5 bg-slate-50 border border-slate-200 rounded-xl font-mono"
+                  className="w-full h-10 px-3.5 bg-slate-50 border border-slate-200 rounded-xl font-medium"
                 />
               </div>
 
@@ -1630,7 +1630,7 @@ export default function AdminDashboardPage() {
         <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 my-8">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="font-['Inter_Tight'] text-lg font-bold text-slate-900">
+              <h3 className="font-['Inter_Tight'] text-lg font-bold tracking-tight text-slate-900">
                 {editingPlan
                   ? `Chỉnh Sửa Gói: ${editingPlan.title}`
                   : 'Thêm Gói Báo Giá Mới'}
@@ -1762,10 +1762,10 @@ export default function AdminDashboardPage() {
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <span className="text-[11px] font-mono font-bold text-[#08482D] bg-[#DAE7C7]/60 px-2.5 py-0.5 rounded-full">
+                <span className="text-[11px] font-semibold tracking-tight text-[#08482D] bg-[#DAE7C7]/60 px-2.5 py-0.5 rounded-full">
                   Mã yêu cầu: {selectedLead.id}
                 </span>
-                <h3 className="font-['Inter_Tight'] text-lg font-bold text-slate-900 mt-1">
+                <h3 className="font-['Inter_Tight'] text-lg font-bold tracking-tight text-slate-900 mt-1">
                   Khách hàng: {selectedLead.name}
                 </h3>
               </div>
@@ -1889,7 +1889,7 @@ export default function AdminDashboardPage() {
         <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-['Inter_Tight'] text-lg font-bold text-slate-900">
+              <h3 className="font-['Inter_Tight'] text-lg font-bold tracking-tight text-slate-900">
                 Thêm Khách Hàng Tư Vấn (Nhập Thủ Công)
               </h3>
               <button
